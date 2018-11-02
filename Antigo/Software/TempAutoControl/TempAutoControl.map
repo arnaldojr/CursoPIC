@@ -1,0 +1,102 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Sat Mar 08 23:29:40 2014
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x0002da
+                   .cinit    romdata   0x00016d    program   0x000004
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00016e      
+            367 out of 8454 program addresses used, program memory utilization is 4%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+               ATRASO_1MS   0x00001b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                ATRASO_1S   0x000021    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+            ATUALIZA_PWM1   0x00011d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  AUMENTA   0x000167    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                   BOTAO1   0x0000f0    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+           CHANGE_CHANNEL   0x000083    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                CHANNEL_0   0x000088    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                CHANNEL_1   0x00008c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                CONFIGURA   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+        CONVERSAO_BIT_DEC   0x000032    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  DECODER   0x0000aa    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               DECREMENTA   0x000107    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                 DEC_VAR2   0x00011a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  DIMINUI   0x00016a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+          ESCREVE_COMANDO   0x0000b5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             ESCREVE_DADO   0x00009f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                EXIBE_POT   0x0000d8    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               EXIBE_TEMP   0x0000c0    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             HABILITA_PWM   0x000146    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               INCREMENTA   0x0000f9    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               INICIA_LCD   0x000090    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                   INICIO   0x000156    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  LER_ADC   0x000028    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                     LOOP   0x000159    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                      MAX   0x000101    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               OUTROTESTE   0x00010d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                 RETORNAR   0x000087    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                    TESTA   0x000057    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                   TESTA1   0x000059    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                TESTA_POT   0x00006d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               TESTA_POT1   0x00006f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               TESTE_VAR2   0x000113    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                     VOLT   0x000023    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                    VOLTA   0x00001d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             _.org_0_002A   0x00002a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             _.org_0_00F7   0x0000f7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                CONFIGURA   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               ATRASO_1MS   0x00001b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                    VOLTA   0x00001d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                ATRASO_1S   0x000021    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                     VOLT   0x000023    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  LER_ADC   0x000028    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             _.org_0_002A   0x00002a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+        CONVERSAO_BIT_DEC   0x000032    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                    TESTA   0x000057    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                   TESTA1   0x000059    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                TESTA_POT   0x00006d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               TESTA_POT1   0x00006f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+           CHANGE_CHANNEL   0x000083    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                 RETORNAR   0x000087    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                CHANNEL_0   0x000088    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                CHANNEL_1   0x00008c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               INICIA_LCD   0x000090    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             ESCREVE_DADO   0x00009f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  DECODER   0x0000aa    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+          ESCREVE_COMANDO   0x0000b5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               EXIBE_TEMP   0x0000c0    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                EXIBE_POT   0x0000d8    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                   BOTAO1   0x0000f0    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             _.org_0_00F7   0x0000f7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               INCREMENTA   0x0000f9    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                      MAX   0x000101    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               DECREMENTA   0x000107    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               OUTROTESTE   0x00010d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+               TESTE_VAR2   0x000113    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                 DEC_VAR2   0x00011a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+            ATUALIZA_PWM1   0x00011d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+             HABILITA_PWM   0x000146    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                   INICIO   0x000156    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                     LOOP   0x000159    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  AUMENTA   0x000167    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+                  DIMINUI   0x00016a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\TempAutoControl\TempAutoControl.asm
+
+

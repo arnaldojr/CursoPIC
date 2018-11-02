@@ -1,0 +1,15 @@
+http://www.puntoflotante.net/
+
+http://www.mcuexamples.com/
+
+http://www.pic18f.com/
+
+https://sites.google.com/site/ehutonline/home/pic-microcontroller/C18-Libraries-Examples
+
+http://microcontrolandos.blogspot.com.br/2013/12/pic-adxl345.html
+
+http://www.ermicro.com/blog/?p=1846
+
+http://www.microchip.com/forums/m639548.aspx
+
+http://www.microchip.com/forums/m710676.aspx?high=ADXL345

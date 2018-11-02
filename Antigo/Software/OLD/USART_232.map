@@ -1,0 +1,48 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Thu Jan 16 11:45:47 2014
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x00005a
+ .config_2007_USART_232.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00002c      
+                            0x002007    0x002007      
+            46 out of 8454 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                       D0   0x000028    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                       D1   0x000026    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                    DELAY   0x000024    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                     INIT   0x000000    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                     MAIN   0x000013    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                   NEXT_0   0x00001c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                  TRANSWT   0x00001e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                   WTHERE   0x00001f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     INIT   0x000000    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                     MAIN   0x000013    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                   NEXT_0   0x00001c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                  TRANSWT   0x00001e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                   WTHERE   0x00001f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                    DELAY   0x000024    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                       D1   0x000026    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+                       D0   0x000028    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\USART_232.ASM
+
+

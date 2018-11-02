@@ -1,0 +1,54 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Mon Dec 02 18:47:33 2013
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x0000ee
+.config_2007_LCD-DECODER.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000076      
+                            0x002007    0x002007      
+            120 out of 8454 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+               ATRASO_1MS   0x00001b    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+            DECODIFICADOR   0x000048    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+          ESCREVE_COMANDO   0x000026    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+             ESCREVE_DADO   0x000030    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                  GARANTE   0x000001    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+               INICIA_LCD   0x00003b    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                     LOOP   0x000076    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                    LOOP2   0x000072    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                     MAIN   0x000053    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                  TEMPO_1   0x00001d    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                  TEMPO_2   0x00001f    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                  GARANTE   0x000001    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+               ATRASO_1MS   0x00001b    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                  TEMPO_1   0x00001d    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                  TEMPO_2   0x00001f    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+          ESCREVE_COMANDO   0x000026    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+             ESCREVE_DADO   0x000030    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+               INICIA_LCD   0x00003b    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+            DECODIFICADOR   0x000048    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                     MAIN   0x000053    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                    LOOP2   0x000072    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+                     LOOP   0x000076    program     static C:\Users\JUNIOR\Documents\Faculdade\tiagaopic\lcd-decoder.asm
+
+

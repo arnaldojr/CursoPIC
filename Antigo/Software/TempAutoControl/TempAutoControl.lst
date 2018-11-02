@@ -1,0 +1,1126 @@
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;CONTROLE AUTOMATICO DE TEMPERATURA. PROGRAMA COMPLETO
+                      00002 
+                      00003  #INCLUDE<P16F877A.INC>
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F877A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2012 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00566         LIST
+                      00004 
+                      00005 
+Warning[207]: Found label after column 1. (REG1)
+  00000020            00006  REG1    EQU 20H
+Warning[207]: Found label after column 1. (REG2)
+  00000021            00007  REG2    EQU 21H
+Warning[207]: Found label after column 1. (CONT)
+  00000022            00008  CONT    EQU 22H
+Warning[207]: Found label after column 1. (CH0L)
+  00000023            00009  CH0L    EQU 23H
+Warning[207]: Found label after column 1. (CH0H)
+  00000024            00010  CH0H    EQU 24H
+Warning[207]: Found label after column 1. (VAR1)
+  00000025            00011  VAR1    EQU 25H
+Warning[207]: Found label after column 1. (VAR2)
+  00000026            00012  VAR2    EQU 26H
+Warning[207]: Found label after column 1. (UNI)
+  00000027            00013  UNI       EQU 27H
+Warning[207]: Found label after column 1. (DEC)
+  00000028            00014  DEC     EQU 28H
+Warning[207]: Found label after column 1. (CEN)
+  00000029            00015  CEN     EQU 29H
+Warning[207]: Found label after column 1. (X)
+  00000030            00016  X             EQU 30H
+Warning[207]: Found label after column 1. (CH)
+  00000031            00017  CH             EQU 31H
+Warning[207]: Found label after column 1. (TEMPERATURA)
+  00000032            00018  TEMPERATURA    EQU 32H
+Warning[207]: Found label after column 1. (POTENCIOMETRO)
+  00000033            00019  POTENCIOMETRO  EQU 33H
+Warning[207]: Found label after column 1. (LOOP3)
+  00000034            00020  LOOP3          EQU 34H
+                      00021 
+                      00022  org 0x00
+0000   2???           00023  GOTO INICIO
+                      00024 
+                      00025  
+                      00026 
+                      00027  
+                      00028 
+                      00029 
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00030 ;------------------------SUB ROTINA DE CONFIGURAÇÃO--------------
+Warning[207]: Found label after column 1. (CONFIGURA)
+0001                  00031  CONFIGURA
+0001   1683           00032  BSF STATUS,RP0
+0002   1303           00033  BCF STATUS,RP1
+0003   30FF           00034  MOVLW B'11111111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0004   0085           00035  MOVWF TRISA
+0005   300F           00036  MOVLW B'00001111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0006   0086           00037  MOVWF TRISB
+0007   30F9           00038  MOVLW B'11111001'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0008   0087           00039  MOVWF TRISC
+0009   3000           00040  MOVLW 0X00
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000A   0088           00041  MOVWF TRISD
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000B   0089           00042  MOVWF TRISE
+000C   3082           00043  MOVLW B'10000010'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000D   009F           00044  MOVWF ADCON1 ;HABILITA ENTRADAS ANALOGICAS!
+000E   3080           00045  MOVLW B'10000000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000F   0081           00046  MOVWF OPTION_REG
+0010   1283           00047  BCF STATUS,RP0
+0011   3041           00048  MOVLW B'01000001'
+0012   009F           00049  MOVWF ADCON0
+0013   3000           00050  MOVLW .0
+0014   00B1           00051  MOVWF CH
+0015   2???           00052  CALL ATRASO_1S
+0016   2???           00053  CALL INICIA_LCD
+0017   3000           00054  MOVLW 0X00
+0018   00A3           00055  MOVWF CH0L
+0019   00A4           00056  MOVWF CH0H
+001A   0008           00057  RETURN
+                      00058 
+                      00059 ;--------------------FIM DA CONFIGURAÇÃO -----------------------
+                      00060 
+                      00061 
+                      00062 ;-------------------SUB ROTINAS DE ATRASOS ---------------------
+                      00063 
+Warning[207]: Found label after column 1. (ATRASO_1MS)
+001B                  00064  ATRASO_1MS
+001B   30FF           00065  MOVLW .255
+001C   00A0           00066  MOVWF REG1
+Warning[207]: Found label after column 1. (VOLTA)
+001D                  00067  VOLTA
+001D   03A0           00068  DECF REG1,F
+001E   1D03           00069  BTFSS STATUS,Z
+001F   2???           00070  GOTO VOLTA
+0020   0008           00071  RETURN
+                      00072 
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[207]: Found label after column 1. (ATRASO_1S)
+0021                  00073  ATRASO_1S
+0021   30FF           00074  MOVLW .255
+0022   00A2           00075  MOVWF CONT
+Warning[207]: Found label after column 1. (VOLT)
+0023                  00076  VOLT
+0023   2???           00077  CALL ATRASO_1MS 
+0024   03A2           00078  DECF CONT,F
+0025   1D03           00079  BTFSS STATUS,Z
+0026   2???           00080  GOTO VOLT
+0027   0008           00081  RETURN
+                      00082 
+                      00083 ;------------------------------FIM DOS ATRASOS--------------------------------
+                      00084 
+                      00085 
+                      00086 ;----------------SUB ROTINAS AD---------------------------------
+                      00087 
+Warning[207]: Found label after column 1. (LER_ADC)
+0028                  00088  LER_ADC
+0028   151F           00089  BSF ADCON0,GO
+0029   191F           00090  BTFSC ADCON0,GO
+002A   2???           00091  GOTO $-1
+002B   1683           00092  BSF STATUS,RP0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+002C   081E           00093  MOVF ADRESL,W
+002D   1283           00094  BCF STATUS,RP0
+002E   00A3           00095  MOVWF CH0L
+002F   081E           00096  MOVF ADRESH,W
+0030   00A4           00097  MOVWF CH0H
+0031   0008           00098  RETURN
+                      00099 
+                      00100 
+Warning[207]: Found label after column 1. (CONVERSAO_BIT_DEC)
+0032                  00101  CONVERSAO_BIT_DEC; CONVERTENDO PARA 8 BITS
+0032   01A7           00102  CLRF UNI
+0033   01A8           00103  CLRF DEC
+0034   01A9           00104  CLRF CEN
+                      00105 
+0035   18A4           00106  BTFSC CH0H,1
+0036   17B0           00107  BSF X,7
+0037   1CA4           00108  BTFSS CH0H,1
+0038   13B0           00109  BCF X,7
+                      00110 
+0039   1824           00111  BTFSC CH0H,0
+003A   1730           00112  BSF X,6
+003B   1C24           00113  BTFSS CH0H,0
+003C   1330           00114  BCF X,6
+                      00115 
+003D   1BA3           00116  BTFSC CH0L,7
+003E   16B0           00117  BSF X,5
+003F   1FA3           00118  BTFSS CH0L,7
+0040   12B0           00119  BCF X,5
+                      00120 
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0041   1B23           00121  BTFSC CH0L,6
+0042   1630           00122  BSF X,4
+0043   1F23           00123  BTFSS CH0L,6
+0044   1230           00124  BCF X,4
+                      00125 
+0045   1AA3           00126  BTFSC CH0L,5
+0046   15B0           00127  BSF X,3
+0047   1EA3           00128  BTFSS CH0L,5
+0048   11B0           00129  BCF X,3
+                      00130 
+0049   1A23           00131  BTFSC CH0L,4
+004A   1530           00132  BSF X,2
+004B   1E23           00133  BTFSS CH0L,4
+004C   1530           00134  BSF X,2
+                      00135 
+004D   19A3           00136  BTFSC CH0L,3
+004E   14B0           00137  BSF X,1
+004F   1DA3           00138  BTFSS CH0L,3
+0050   10B0           00139  BCF X,1
+                      00140 
+0051   1923           00141  BTFSC CH0L,2
+0052   1430           00142  BSF X,0
+0053   1D23           00143  BTFSS CH0L,2
+0054   1030           00144  BCF X,0
+                      00145 
+0055   1831           00146  BTFSC CH,0   ;ch=0-->temperatura
+0056   2???           00147  GOTO TESTA_POT
+0057                  00148 TESTA 
+0057   0830           00149  MOVF  X,W
+0058   00B2           00150  MOVWF TEMPERATURA
+Warning[207]: Found label after column 1. (TESTA1)
+0059                  00151  TESTA1
+0059   3000           00152  MOVLW .0
+005A   0230           00153  SUBWF X,W
+005B   1903           00154  BTFSC STATUS,Z
+005C   2???           00155  GOTO EXIBE_TEMP
+005D   03B0           00156  DECF X,F
+005E   0AA9           00157  INCF CEN,F
+005F   0AA9           00158  INCF CEN,F
+0060   300A           00159  MOVLW .10
+0061   0229           00160  SUBWF CEN,W
+0062   1D03           00161  BTFSS STATUS,Z
+0063   2???           00162  GOTO TESTA1
+0064   01A9           00163  CLRF CEN
+0065   0AA8           00164  INCF DEC,F
+0066   300A           00165  MOVLW .10
+0067   0228           00166  SUBWF DEC,W
+0068   1D03           00167  BTFSS STATUS,Z
+0069   2???           00168  GOTO TESTA1
+006A   01A8           00169  CLRF DEC
+006B   0AA7           00170  INCF UNI,F
+006C   2???           00171  GOTO TESTA1
+                      00172 
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[207]: Found label after column 1. (TESTA_POT)
+006D                  00173  TESTA_POT
+006D   0830           00174  MOVF  X,W
+006E   00B3           00175  MOVWF POTENCIOMETRO
+006F                  00176 TESTA_POT1
+006F   3000           00177  MOVLW .0
+0070   02B0           00178  SUBWF X,F
+0071   1903           00179  BTFSC STATUS,Z
+0072   2???           00180  GOTO EXIBE_POT
+                      00181 
+0073   03B0           00182  DECF X,F
+0074   0AA9           00183  INCF CEN,F
+0075   0AA9           00184  INCF CEN,F
+0076   300A           00185  MOVLW .10
+0077   0229           00186  SUBWF CEN,W
+0078   1D03           00187  BTFSS STATUS,Z
+0079   2???           00188  GOTO TESTA_POT1
+                      00189 
+007A   01A9           00190  CLRF CEN 
+007B   0AA8           00191  INCF DEC,F
+007C   300A           00192  MOVLW .10
+007D   0228           00193  SUBWF DEC,W
+007E   1D03           00194  BTFSS STATUS,Z
+007F   2???           00195  GOTO TESTA_POT1
+                      00196 
+0080   01A8           00197  CLRF DEC
+0081   0AA7           00198  INCF UNI,F
+0082   2???           00199  GOTO TESTA_POT1
+                      00200 
+                      00201 
+Warning[207]: Found label after column 1. (CHANGE_CHANNEL)
+0083                  00202  CHANGE_CHANNEL
+0083   1831           00203  BTFSC CH,0
+0084   2???           00204  GOTO CHANNEL_0
+0085   1C31           00205  BTFSS CH,0
+0086   2???           00206  GOTO CHANNEL_1
+Warning[207]: Found label after column 1. (RETORNAR)
+0087                  00207  RETORNAR
+0087   0008           00208  RETURN
+                      00209 
+Warning[207]: Found label after column 1. (CHANNEL_0)
+0088                  00210  CHANNEL_0
+0088   1031           00211  BCF CH,0
+                      00212  ;CANAL 0:
+0089   3041           00213  MOVLW B'01000001'
+008A   009F           00214  MOVWF ADCON0
+008B   2???           00215  GOTO RETORNAR
+                      00216 
+Warning[207]: Found label after column 1. (CHANNEL_1)
+008C                  00217  CHANNEL_1
+008C   1431           00218  BSF CH,0
+                      00219  ;CANAL 1:
+008D   3049           00220  MOVLW B'01001001'
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+008E   009F           00221  MOVWF ADCON0
+008F   2???           00222  GOTO RETORNAR
+                      00223 ;---------------------------FIM DO AD----------------------------------
+                      00224 
+                      00225 
+                      00226 ;-----------------------SUB ROTINA DO DISPLAY--------------------
+                      00227 
+Warning[207]: Found label after column 1. (INICIA_LCD)
+0090                  00228  INICIA_LCD
+0090   3038           00229  MOVLW 0X38
+0091   2???           00230  CALL ESCREVE_COMANDO
+0092   2???           00231  CALL ATRASO_1MS
+0093   2???           00232  CALL ATRASO_1MS
+0094   2???           00233  CALL ATRASO_1MS
+0095   3038           00234  MOVLW 0X38
+0096   2???           00235  CALL ESCREVE_COMANDO
+0097   300C           00236  MOVLW 0X0C
+0098   2???           00237  CALL ESCREVE_COMANDO
+0099   3006           00238  MOVLW 0X06
+009A   2???           00239  CALL ESCREVE_COMANDO
+009B   3001           00240  MOVLW 0X01
+009C   2???           00241  CALL ESCREVE_COMANDO
+009D   2???           00242  CALL ATRASO_1MS
+009E   0008           00243  RETURN
+                      00244 
+Warning[207]: Found label after column 1. (ESCREVE_DADO)
+009F                  00245  ESCREVE_DADO ;ESCREVE CARACTERES NO LCD 
+009F   1409           00246  BSF PORTE,0 ;SINAL DE DADO
+00A0   0000           00247  NOP
+00A1   0088           00248  MOVWF PORTD ;INFORMAÇÃO NA PORTA D DE DAOD
+00A2   0000           00249  NOP
+00A3   0000           00250  NOP
+00A4   1489           00251  BSF PORTE,1 ;PULSO DE ENABLE
+00A5   0000           00252  NOP
+00A6   0000           00253  NOP
+00A7   1089           00254  BCF PORTE,1 
+00A8   2???           00255  CALL ATRASO_1MS ;ATRSO DE 1ms
+00A9   0008           00256  RETURN
+                      00257 
+                      00258 
+Warning[207]: Found label after column 1. (DECODER)
+00AA                  00259  DECODER
+00AA   0782           00260  ADDWF PCL,F
+00AB   3430           00261  RETLW '0'
+00AC   3431           00262  RETLW '1'
+00AD   3432           00263  RETLW '2'
+00AE   3433           00264  RETLW '3'
+00AF   3434           00265  RETLW '4'
+00B0   3435           00266  RETLW '5'
+00B1   3436           00267  RETLW '6'
+00B2   3437           00268  RETLW '7'
+00B3   3438           00269  RETLW '8'
+00B4   3439           00270  RETLW '9'
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00271 
+Warning[207]: Found label after column 1. (ESCREVE_COMANDO)
+00B5                  00272  ESCREVE_COMANDO ;ENVIA COMANDO AO LCD
+00B5   1009           00273  BCF PORTE,0 ;SINAL DE COMANDO
+00B6   0000           00274  NOP
+00B7   0088           00275  MOVWF PORTD ;INFORMAÇÃO NA PORTA D DE DAOD
+00B8   0000           00276  NOP
+00B9   0000           00277  NOP
+00BA   1489           00278  BSF PORTE,1 ;PULSO DE ENABLE
+00BB   0000           00279  NOP
+00BC   0000           00280  NOP
+00BD   1089           00281  BCF PORTE,1 
+00BE   2???           00282  CALL ATRASO_1MS ;ATRSO DE 1ms
+00BF   0008           00283  RETURN
+                      00284 
+Warning[207]: Found label after column 1. (EXIBE_TEMP)
+00C0                  00285  EXIBE_TEMP
+00C0   3080           00286  MOVLW 0X80
+00C1   2???           00287  CALL ESCREVE_COMANDO
+00C2   3054           00288  MOVLW 'T'
+00C3   2???           00289  CALL ESCREVE_DADO
+00C4   3045           00290  MOVLW 'E'
+00C5   2???           00291  CALL ESCREVE_DADO
+00C6   304D           00292  MOVLW 'M'
+00C7   2???           00293  CALL ESCREVE_DADO
+00C8   3050           00294  MOVLW 'P'
+00C9   2???           00295  CALL ESCREVE_DADO
+00CA   303A           00296  MOVLW ':'
+00CB   2???           00297  CALL ESCREVE_DADO
+00CC   0827           00298  MOVF UNI,W
+00CD   2???           00299  CALL DECODER
+00CE   2???           00300  CALL ESCREVE_DADO
+00CF   302C           00301  MOVLW ','
+00D0   2???           00302  CALL ESCREVE_DADO
+00D1   0828           00303  MOVF DEC,W
+00D2   2???           00304  CALL DECODER
+00D3   2???           00305  CALL ESCREVE_DADO
+00D4   0829           00306  MOVF CEN,W
+00D5   2???           00307  CALL DECODER
+00D6   2???           00308  CALL ESCREVE_DADO
+00D7   0008           00309  RETURN
+                      00310 
+Warning[207]: Found label after column 1. (EXIBE_POT)
+00D8                  00311  EXIBE_POT
+00D8   3080           00312  MOVLW 0X80
+00D9   2???           00313  CALL ESCREVE_COMANDO
+00DA   30C0           00314  MOVLW 0xC0
+00DB   2???           00315  CALL ESCREVE_COMANDO
+00DC   3050           00316  MOVLW 'P'
+00DD   2???           00317  CALL ESCREVE_DADO
+00DE   304F           00318  MOVLW 'O'
+00DF   2???           00319  CALL ESCREVE_DADO
+00E0   3054           00320  MOVLW 'T'
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00E1   2???           00321  CALL ESCREVE_DADO
+00E2   303A           00322  MOVLW ':'
+00E3   2???           00323  CALL ESCREVE_DADO
+00E4   0827           00324  MOVF UNI,W
+00E5   2???           00325  CALL DECODER
+00E6   2???           00326  CALL ESCREVE_DADO
+00E7   302C           00327  MOVLW ','
+00E8   2???           00328  CALL ESCREVE_DADO
+00E9   0828           00329  MOVF DEC,W
+00EA   2???           00330  CALL DECODER
+00EB   2???           00331  CALL ESCREVE_DADO
+00EC   0829           00332  MOVF CEN,W
+00ED   2???           00333  CALL DECODER
+00EE   2???           00334  CALL ESCREVE_DADO
+00EF   0008           00335  RETURN
+                      00336 
+                      00337  
+                      00338 
+                      00339 ;--------------------------FIM DO DISPLAY------------------------------------
+                      00340 
+                      00341 ;----------------SUB ROTINA DOS BOTÕES ---------------------------
+                      00342 
+                      00343  
+                      00344 
+                      00345  
+                      00346 
+00F0                  00347 BOTAO1
+00F0   3064           00348  MOVLW .100
+00F1   07A5           00349  ADDWF VAR1,F
+00F2   1803           00350  BTFSC STATUS,C
+00F3   0AA6           00351  INCF VAR2,F
+00F4   2???           00352  CALL ATUALIZA_PWM1
+00F5   2???           00353  CALL ATRASO_1S
+00F6   1D86           00354  BTFSS PORTB,3
+00F7   2???           00355  GOTO $-1
+00F8   0008           00356  RETURN
+                      00357 
+00F9                  00358 INCREMENTA
+                      00359 
+00F9   3005           00360  MOVLW .5
+00FA   07A5           00361  ADDWF VAR1,F
+00FB   1803           00362  BTFSC STATUS,C
+00FC   0AA6           00363  INCF  VAR2,F
+Warning[203]: Found opcode in column 1. (BTFSC)
+00FD   1926           00364 BTFSC VAR2,2
+Warning[203]: Found opcode in column 1. (GOTO)
+00FE   2???           00365 GOTO MAX
+00FF   2???           00366  CALL  ATUALIZA_PWM1
+0100   0008           00367  RETURN
+0101                  00368 MAX
+Warning[203]: Found opcode in column 1. (MOVLW)
+0101   30FF           00369 MOVLW 0XFF
+Warning[203]: Found opcode in column 1. (MOVWF)
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0102   00A5           00370 MOVWF VAR1
+Warning[203]: Found opcode in column 1. (MOVLW)
+0103   3003           00371 MOVLW B'00000011'
+Warning[203]: Found opcode in column 1. (MOVWF)
+0104   00A6           00372 MOVWF VAR2
+0105   2???           00373  CALL  ATUALIZA_PWM1
+Warning[203]: Found opcode in column 1. (RETURN)
+0106   0008           00374 RETURN
+                      00375 
+                      00376 
+0107                  00377 DECREMENTA
+                      00378 
+0107   0825           00379  MOVF  VAR1,W
+0108   1D03           00380  BTFSS STATUS,Z
+0109   2???           00381  GOTO   OUTROTESTE
+010A   0826           00382  MOVF VAR2,W
+010B   1903           00383  BTFSC  STATUS,Z
+010C   0008           00384  RETURN
+                      00385  
+010D                  00386 OUTROTESTE
+010D   300F           00387  MOVLW .15
+010E   02A5           00388  SUBWF VAR1,F
+010F   1C03           00389  BTFSS STATUS,C
+0110   2???           00390  GOTO TESTE_VAR2;DEU NEGATIVO VAR1
+0111   2???           00391  CALL ATUALIZA_PWM1 ;BLZ VAR1 É ZERO VAR2 NAO MUDA
+0112   0008           00392  RETURN
+                      00393 
+0113                  00394 TESTE_VAR2
+                      00395 
+0113   0826           00396  MOVF VAR2,W
+0114   1D03           00397  BTFSS  STATUS,Z
+0115   2???           00398  GOTO DEC_VAR2
+0116   01A5           00399  CLRF VAR1
+0117   01A6           00400  CLRF VAR2
+0118   2???           00401  CALL ATUALIZA_PWM1
+Warning[203]: Found opcode in column 1. (RETURN)
+0119   0008           00402 RETURN
+                      00403 
+011A                  00404 DEC_VAR2
+Message[305]: Using default destination of 1 (file).
+011A   03A6           00405  DECF VAR2
+011B   2???           00406  CALL ATUALIZA_PWM1
+Warning[203]: Found opcode in column 1. (RETURN)
+011C   0008           00407 RETURN
+                      00408 
+                      00409  
+                      00410 
+                      00411 ;------------------------FIM DOS BOTÕES----------------------------------------
+                      00412 
+                      00413  
+                      00414 
+                      00415 ;----------------SUB ROTINAS DO PWM --------------------------------
+                      00416 
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[207]: Found label after column 1. (ATUALIZA_PWM1)
+011D                  00417  ATUALIZA_PWM1 ;ATUALIZA O VALOR DA LARGURA DE PULSO DO PWM.
+011D   1825           00418  BTFSC VAR1,0
+011E   1617           00419  BSF CCP1CON,4
+011F   1C25           00420  BTFSS VAR1,0
+0120   1217           00421  BCF CCP1CON,4
+                      00422 
+0121   18A5           00423  BTFSC VAR1,1
+0122   1697           00424  BSF CCP1CON,5
+0123   1CA5           00425  BTFSS VAR1,1
+0124   1297           00426  BCF CCP1CON,5
+                      00427 
+0125   1925           00428  BTFSC VAR1,2
+0126   1415           00429  BSF CCPR1L,0
+0127   1D25           00430  BTFSS VAR1,2
+0128   1015           00431  BCF CCPR1L,0
+                      00432 
+0129   19A5           00433  BTFSC VAR1,3
+012A   1495           00434  BSF CCPR1L,1
+012B   1DA5           00435  BTFSS VAR1,3
+012C   1095           00436  BCF CCPR1L,1
+                      00437 
+012D   1A25           00438  BTFSC VAR1,4
+012E   1515           00439  BSF CCPR1L,2
+012F   1E25           00440  BTFSS VAR1,4
+0130   1115           00441  BCF CCPR1L,2
+                      00442 
+0131   1AA5           00443  BTFSC VAR1,5
+0132   1595           00444  BSF CCPR1L,3
+0133   1EA5           00445  BTFSS VAR1,5
+0134   1195           00446  BCF CCPR1L,3
+                      00447 
+0135   1B25           00448  BTFSC VAR1,6
+0136   1615           00449  BSF CCPR1L,4
+0137   1F25           00450  BTFSS VAR1,6
+0138   1215           00451  BCF CCPR1L,4
+                      00452 
+0139   1BA5           00453  BTFSC VAR1,7
+013A   1695           00454  BSF CCPR1L,5
+013B   1FA5           00455  BTFSS VAR1,7
+013C   1295           00456  BCF CCPR1L,5
+                      00457 
+013D   1826           00458  BTFSC VAR2,0
+013E   1715           00459  BSF CCPR1L,6
+013F   1C26           00460  BTFSS VAR2,0
+0140   1315           00461  BCF CCPR1L,6
+                      00462 
+0141   18A6           00463  BTFSC VAR2,1
+0142   1795           00464  BSF CCPR1L,7
+0143   1CA6           00465  BTFSS VAR2,1
+0144   1395           00466  BCF CCPR1L,7
+0145   0008           00467  RETURN
+                      00468 
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[207]: Found label after column 1. (HABILITA_PWM)
+0146                  00469  HABILITA_PWM
+0146   300F           00470  MOVLW B'00001111' 
+0147   0097           00471  MOVWF CCP1CON ;HABILITA PWM1
+0148   009D           00472  MOVWF CCP2CON ;HABILITA PWM2
+0149   300F           00473  MOVLW B'00001111'
+014A   0095           00474  MOVWF CCPR1L ;0%
+014B   019B           00475  CLRF CCPR2L ;0%
+014C   1683           00476  BSF STATUS,RP0
+014D   30FF           00477  MOVLW 0xFF
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+014E   0092           00478  MOVWF PR2 ;RESOLUÇÃO DE 10 BITS
+014F   1283           00479  BCF STATUS,RP0
+0150   1512           00480  BSF T2CON,TMR2ON ;TIMER LIGADO
+0151   3000           00481  MOVLW .0
+0152   00A5           00482  MOVWF VAR1
+0153   3000           00483  MOVLW .0
+0154   00A6           00484  MOVWF VAR2
+0155   0008           00485  RETURN
+                      00486 
+                      00487 ;------------------FIM PWM ---------------------------------------
+                      00488 
+                      00489 
+                      00490 ;------------***********************------------------------------
+                      00491 ;------------***********************------------------------------
+                      00492 ;------------***********************------------------------------
+                      00493 ;------------***********************------------------------------
+                      00494 ;------------***********************------------------------------
+                      00495 
+                      00496 ;-------------------PROGRAMA PRINCIPAL ---------------------------
+                      00497 
+Warning[207]: Found label after column 1. (INICIO)
+0156                  00498  INICIO
+0156   2???           00499  CALL CONFIGURA
+0157   2???           00500  CALL HABILITA_PWM
+0158   01B1           00501  CLRF CH
+                      00502 
+Warning[207]: Found label after column 1. (LOOP)
+0159                  00503  LOOP
+0159   2???           00504  CALL ATRASO_1MS
+015A   2???           00505  CALL LER_ADC
+015B   2???           00506  CALL CONVERSAO_BIT_DEC
+015C   2???           00507  CALL CHANGE_CHANNEL
+015D   2???           00508  CALL LER_ADC
+015E   2???           00509  CALL CONVERSAO_BIT_DEC
+015F   2???           00510  CALL CHANGE_CHANNEL
+0160   0833           00511  MOVF POTENCIOMETRO,W
+0161   0232           00512  SUBWF TEMPERATURA,W
+0162   1903           00513  BTFSC STATUS,Z
+0163   2???           00514  GOTO LOOP
+0164   1C03           00515  BTFSS STATUS,C
+0165   2???           00516  GOTO AUMENTA
+0166   2???           00517  GOTO DIMINUI
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00518 
+0167                  00519 AUMENTA
+Warning[203]: Found opcode in column 1. (CALL)
+0167   2???           00520 CALL INCREMENTA
+Warning[203]: Found opcode in column 1. (CALL)
+0168   2???           00521 CALL ATRASO_1S
+Warning[203]: Found opcode in column 1. (GOTO)
+0169   2???           00522 GOTO LOOP
+                      00523 
+016A                  00524 DIMINUI
+Warning[203]: Found opcode in column 1. (CALL)
+016A   2???           00525 CALL DECREMENTA
+Warning[203]: Found opcode in column 1. (CALL)
+016B   2???           00526 CALL ATRASO_1S
+Warning[203]: Found opcode in column 1. (GOTO)
+016C   2???           00527 GOTO LOOP
+                      00528 
+Warning[205]: Found directive in column 1. (END)
+                      00529 END
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ATRASO_1MS                        0000001B
+ATRASO_1S                         00000021
+ATUALIZA_PWM1                     0000011D
+AUMENTA                           00000167
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BOTAO1                            000000F0
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CEN                               00000029
+CH                                00000031
+CH0H                              00000024
+CH0L                              00000023
+CHANGE_CHANNEL                    00000083
+CHANNEL_0                         00000088
+CHANNEL_1                         0000008C
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+CONFIGURA                         00000001
+CONT                              00000022
+CONVERSAO_BIT_DEC                 00000032
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DEC                               00000028
+DECODER                           000000AA
+DECREMENTA                        00000107
+DEC_VAR2                          0000011A
+DIMINUI                           0000016A
+D_A                               00000005
+D_NOT_A                           00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+ESCREVE_COMANDO                   000000B5
+ESCREVE_DADO                      0000009F
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+EXIBE_POT                         000000D8
+EXIBE_TEMP                        000000C0
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+GO_NOT_DONE                       00000002
+HABILITA_PWM                      00000146
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+IBF                               00000007
+IBOV                              00000005
+INCREMENTA                        000000F9
+INDF                              00000000
+INICIA_LCD                        00000090
+INICIO                            00000156
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LER_ADC                           00000028
+LOOP                              00000159
+LOOP3                             00000034
+MAX                               00000101
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+OPTION_REG                        00000081
+OUTROTESTE                        0000010D
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+POTENCIOMETRO                     00000033
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+READ_WRITE                        00000002
+REG1                              00000020
+REG2                              00000021
+RETORNAR                          00000087
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SEN                               00000000
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TEMPERATURA                       00000032
+TESTA                             00000057
+TESTA1                            00000059
+TESTA_POT                         0000006D
+TESTA_POT1                        0000006F
+TESTE_VAR2                        00000113
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+UNI                               00000027
+VAR1                              00000025
+VAR2                              00000026
+VOLT                              00000023
+VOLTA                             0000001D
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+X                                 00000030
+Z                                 00000002
+_.org_0_002A                      0000002A
+_.org_0_00F7                      000000F7
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+MPASM  5.44               TEMPAUTOCONTROL.ASM   3-8-2014  23:29:38         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+__DEBUG                           1
+
+Errors   :     0
+Warnings :    54 reported,     0 suppressed
+Messages :    10 reported,     0 suppressed
+
+

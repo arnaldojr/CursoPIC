@@ -1,0 +1,12 @@
+Exemplo USB Device - CDC - Basic Demo - McLab2.zip: Este exemplo é uma demonstração do uso das funções da classe CDC RS232. 
+Depois de gravado, conecte na porta USB e durante a instalação aponte para a pasta Drive USB PIC18F4550.
+Usando o Hiperterminal do Windows, configure para a porta COM instalada. Pressionando o botão S3 aparecerá a mensagem Button Pressed --. Digitando um caractere, retornará ao terminal o caractere seguinte (por exemplo, se você digitou o 'a', aparecerá 'b').
+
+Exemplo USB Device - CDC - Serial Emulator - McLab2.zip: Este exemplo é uma demonstração do uso das funções da classe CDC RS232. 
+Depois de gravado, conecte na porta USB e durante a instalação aponte para a pasta Drive USB PIC18F4550.
+Este exemplo é um conversor USB-serial, onde o baud rate é fixo em 19200 bps.
+
+Exemplo USB Device - HID - Mouse - McLab2.zip: Este exemplo é uma demonstração do uso das funções da classe HID.
+Este exemplo emula um mouse. Ao pressionar o botão S4 o cursor do mouse ficará "em círculo". Pressionando novamente o botão S4, o cursor voltará ao normal.
+
+Para todos os exemplos, procure o comentário //Modificação LabTools para saber o que foi alterado do exemplo original para rodar na McLab2 com POIC18F4550.

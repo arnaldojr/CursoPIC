@@ -1,0 +1,6 @@
+USB Device - CDC - Basic Demo - McLab3.zip: Este exemplo é uma demonstração do uso das funções da classe CDC RS232. 
+Depois de gravado, conecte na porta USB e durante a instalação aponte para a pasta Drive USB PIC18F4550.
+Usando o Hiperterminal do Windows (ou outro software), configure para a porta COM instalada. Pressionando o botão S1 aparecerá a mensagem Button Pressed --. Digitando um caractere, retornará ao terminal o caractere seguinte (por exemplo, se você digitou o 'a', aparecerá 'b').
+
+USB Device - HID - Mouse - C18 - McLab3.zip: Este exemplo é uma demonstração do uso das funções da classe HID.
+Este exemplo emula um mouse. Ao pressionar o botão S1 o cursor do mouse ficará "em círculo". Pressionando novamente o botão S5, o cursor voltará ao normal.

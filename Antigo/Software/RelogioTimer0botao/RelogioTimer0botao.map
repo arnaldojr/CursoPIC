@@ -1,0 +1,100 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Sat Mar 08 23:37:22 2014
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000002
+                   .cinit    romdata   0x000001    program   0x000004
+                   .org_1       code   0x000004    program   0x00028c
+.config_2007_RELOGIOTIMER0BOTAO.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000002      
+                            0x000004    0x000149      
+                            0x002007    0x002007      
+            330 out of 8454 program addresses used, program memory utilization is 3%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                ALTERADHR   0x000044    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                 ALTERAHR   0x000039    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                ALTERAHR4   0x00003b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+             ATRASO_100MS   0x00006e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+               ATRASO_1MS   0x000061    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                ATRASO_1S   0x000067    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     BOT1   0x00013f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     BOT2   0x000142    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     BOT3   0x000145    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                CONFIGURA   0x00004b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  DECODER   0x000093    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+          ESCREVE_COMANDO   0x00009e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+             ESCREVE_DADO   0x000088    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                 EXIBEDHR   0x0000c7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                EXIBEDMIN   0x0000bb    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                EXIBEDSEG   0x0000af    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  EXIBEHR   0x0000c1    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                 EXIBEMIN   0x0000b5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                 EXIBESEG   0x0000a9    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   INCDHR   0x0000cd    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  INCDHR1   0x0000d6    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  INCDMIN   0x0000f1    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                    INCHR   0x0000dd    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   INCMIN   0x0000fb    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+               INICIA_LCD   0x000079    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   INICIO   0x000105    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     LOOP   0x00012e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                    NDEU2   0x0000ea    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  TEMPO_1   0x000070    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  TEMPO_2   0x000072    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     VOLT   0x000069    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                    VOLTA   0x000045    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   VOLTA1   0x000063    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 ALTERAHR   0x000039    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                ALTERAHR4   0x00003b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                ALTERADHR   0x000044    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                    VOLTA   0x000045    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                CONFIGURA   0x00004b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+               ATRASO_1MS   0x000061    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   VOLTA1   0x000063    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                ATRASO_1S   0x000067    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     VOLT   0x000069    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+             ATRASO_100MS   0x00006e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  TEMPO_1   0x000070    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  TEMPO_2   0x000072    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+               INICIA_LCD   0x000079    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+             ESCREVE_DADO   0x000088    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  DECODER   0x000093    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+          ESCREVE_COMANDO   0x00009e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                 EXIBESEG   0x0000a9    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                EXIBEDSEG   0x0000af    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                 EXIBEMIN   0x0000b5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                EXIBEDMIN   0x0000bb    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  EXIBEHR   0x0000c1    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                 EXIBEDHR   0x0000c7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   INCDHR   0x0000cd    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  INCDHR1   0x0000d6    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                    INCHR   0x0000dd    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                    NDEU2   0x0000ea    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                  INCDMIN   0x0000f1    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   INCMIN   0x0000fb    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                   INICIO   0x000105    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     LOOP   0x00012e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     BOT1   0x00013f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     BOT2   0x000142    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+                     BOT3   0x000145    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\RelogioTimer0botao\RelogioTimer0botao.asm
+
+

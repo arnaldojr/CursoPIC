@@ -1,0 +1,1274 @@
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 #INCLUDE <P16F877A.INC>         ;ARQUIVO PADRÃO MICROCHIP PARA 16F628A
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F877A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00566         LIST
+2007   3F71           00002         __CONFIG  _BODEN_ON & _CP_OFF & _PWRTE_ON & _WDT_OFF & _LVP_OFF & _XT_OSC
+                      00003 
+  000000FF            00004 FILTRO_BTS  EQU .255
+  000000FA            00005 FILTRO_BTS4 EQU .250
+                      00006 
+                      00007 ; CONSTANTES
+                      00008 #DEFINE BANK0     BCF STATUS,RP0        ;SETA BANK 0 DE MEMÓRIA
+                      00009 #DEFINE BANK1     BSF STATUS,RP0        ;SETA BANK 1 DE MAMÓRIA
+                      00010 #DEFINE BANK_LOW  BCF STATUS,RP1    ; BANK0-1
+                      00011 #DEFINE BANK_HIGH BSF STATUS,RP1    ; BANK2-3
+                      00012 #DEFINE BT0       PORTB,0
+                      00013 #DEFINE BT1       PORTB,1 
+                      00014 #DEFINE BT2       PORTB,2
+                      00015 #DEFINE BT3       PORTB,3
+                      00016 #DEFINE LAMP      PORTA,0
+                      00017 #DEFINE DISPLAY   PORTD
+                      00018 #DEFINE BUZZER    PORTA,5
+                      00019 #DEFINE DEZENA    PORTB,7
+                      00020 #DEFINE UNIDADE   PORTB,6
+                      00021 
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00022 CBLOCK 0x20
+  00000020            00023         FILTRO_BT0
+  00000021            00024         FILTRO_BT1
+  00000022            00025         FILTRO_BT2
+  00000023            00026         FILTRO_BT3
+  00000024            00027         STATUS_BTS
+  00000025            00028         STATUS_TEMP
+  00000026            00029         W_TEMP
+                      00030 
+  00000027            00031         ESTADO ;0x27
+  00000028            00032         MULT1
+  00000029            00033         MULT2
+  0000002A            00034         CONT1
+  0000002B            00035         CONT2
+  0000002C            00036         CONTIMER
+  0000002D            00037         PROX_POS
+  0000002E            00038         ACERTOS
+  0000002F            00039         CONTBUZZER
+  00000030            00040         CONTLED
+  00000031            00041         CONT_UD
+  00000032            00042         ACERTOS2
+  00000033            00043         DELAY
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000034            00044         DELAY2 ; TEMPO ACESSO DISPLAY
+  00000035            00045         DELAY3 ; TEMPO APAGADO DISPLAY
+Warning[205]: Found directive in column 1. (ENDC)
+                      00046 ENDC 
+                      00047 
+Warning[205]: Found directive in column 1. (ORG)
+                      00048 ORG 0x00
+0000   2???           00049         GOTO INICIO
+                      00050 
+Warning[205]: Found directive in column 1. (ORG)
+                      00051 ORG 0x04
+0004   2???           00052         GOTO INTERUP
+                      00053 
+Warning[205]: Found directive in column 1. (ORG)
+                      00054 ORG 0x06
+0006                  00055 TABELA_DISPLAY_7_SEG
+0006   390F           00056         ANDLW B'00001111' ; EXECUTA MASCARA P/ EVITAR PULOS ERRADOS
+0007   0782           00057         ADDWF PCL,F ; SOMA DESLOCAMENTO AO PROGRAM COUNTER,
+                      00058         ; GERANDO UMA TABELA DO TIPO "CASE".
+                      00059         ; PGFEDCBA ; POSIÇÃO RELATIVA AOS SEGMENTOS
+0008   343F           00060         RETLW   B'00111111'     ; 00 - RETORNA SÍMBOLO CORRETO 0
+0009   3406           00061         RETLW   B'00000110'     ; 01 - RETORNA SÍMBOLO CORRETO 1
+000A   345B           00062         RETLW   B'01011011'     ; 02 - RETORNA SÍMBOLO CORRETO 2
+000B   344F           00063         RETLW   B'01001111'     ; 03 - RETORNA SÍMBOLO CORRETO 3
+000C   3466           00064         RETLW   B'01100110'     ; 04 - RETORNA SÍMBOLO CORRETO 4        
+000D   346D           00065         RETLW   B'01101101'     ; 05 - RETORNA SÍMBOLO CORRETO 5        
+000E   347D           00066         RETLW   B'01111101'     ; 06 - RETORNA SÍMBOLO CORRETO 6        
+000F   3407           00067         RETLW   B'00000111'     ; 07 - RETORNA SÍMBOLO CORRETO 7        
+0010   347F           00068         RETLW   B'01111111'     ; 08 - RETORNA SÍMBOLO CORRETO 8        
+0011   346F           00069         RETLW   B'01101111'     ; 09 - RETORNA SÍMBOLO CORRETO 9
+0012   3400           00070         RETLW   B'00000000' ; LETRA A
+0013   3400           00071         RETLW B'00000000' ; BH - BLANK
+0014   3400           00072         RETLW B'00000000' ; CH - BLANK
+0015   3400           00073         RETLW B'00000000' ; DH - BLANK
+0016   3400           00074         RETLW B'00000000' ; EH - BLANK
+0017   3400           00075         RETLW B'00000000' ; FH - BLANK
+                      00076         ; --------------------
+                      00077 
+0018                  00078 TABELA_LED
+0018   3907           00079         ANDLW B'00000111' ; EXECUTA MASCARA P/ EVITAR PULOS ERRADOS
+0019   0782           00080         ADDWF PCL,F ; SOMA DESLOCAMENTO AO PROGRAM COUNTER,
+001A   348F           00081         RETLW   B'10001111'     ; 00 - ERRO
+001B   3481           00082         RETLW   B'10000001'     ; 01 - RETORNA SÍMBOLO CORRETO 1
+001C   3482           00083         RETLW   B'10000010'     ; 02 - RETORNA SÍMBOLO CORRETO 2
+001D   3484           00084         RETLW   B'10000100'     ; 03 - RETORNA SÍMBOLO CORRETO 3
+001E   3488           00085         RETLW   B'10001000'     ; 04 - RETORNA SÍMBOLO CORRETO 4        
+001F   348F           00086         RETLW   B'10001111'     ; 05 - ERRO
+0020   348F           00087         RETLW   B'10001111'     ; 06 - ERRO
+0021   348F           00088         RETLW   B'10001111'     ; 07 - ERRO
+                      00089         ; --------------------
+                      00090 
+0022                  00091 RESET_TIMER
+0022   3006           00092         MOVLW .6
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0023   0081           00093         MOVWF TMR0
+0024   110B           00094         BCF INTCON, TMR0IF
+0025   0008           00095         RETURN
+                      00096 
+0026                  00097 AJUSTA_PROX 
+0026   3001           00098         MOVLW .1
+0027   00AD           00099         MOVWF PROX_POS
+0028   0008           00100         RETURN
+                      00101 
+0029                  00102 ESTADO_0
+0029   3040           00103         MOVLW B'01000000'
+002A   0088           00104         MOVWF DISPLAY
+002B   2???           00105         GOTO SAI_INTERUP
+                      00106 
+002C                  00107 LED_ACENDE
+002C   0800           00108         MOVF INDF, W
+002D   2???           00109         CALL TABELA_LED
+002E   0086           00110         MOVWF PORTB
+002F   2???           00111         GOTO SAI_INTERUP
+                      00112 
+0030                  00113 LED_APAGA
+0030   3080           00114         MOVLW B'10000000'
+0031   0086           00115         MOVWF PORTB
+0032   2???           00116         GOTO SAI_INTERUP
+                      00117         
+0033                  00118 ESTADO_1
+                      00119         ;LED ACESO
+                      00120         ;VERIFICA SE JA ESTA EM ZERO
+0033   08AB           00121         MOVF CONT2, F
+0034   1903           00122         BTFSC STATUS, Z
+0035   2???           00123         GOTO  ESTADO_1_1
+                      00124 
+                      00125         ; SE NAO ESTIVER DECREMENTA, AGUARDA COM LED APAGADO
+0036   0BAB           00126         DECFSZ CONT2, F
+0037   2???           00127         GOTO LED_APAGA
+                      00128         
+                      00129         ; ACENDE O LED AQUI
+0038                  00130 ESTADO_1_1      
+0038   3000           00131         MOVLW .0
+0039   0088           00132         MOVWF DISPLAY
+003A   0BAA           00133         DECFSZ CONT1, F
+003B   2???           00134         GOTO LED_ACENDE
+                      00135 
+003C   30A0           00136         MOVLW 0xA0
+003D   072E           00137         ADDWF ACERTOS, W
+003E   0604           00138         XORWF FSR, W
+003F   1903           00139         BTFSC STATUS, Z
+0040   2???           00140         GOTO SETA_ESTADO_2
+                      00141         
+0041   0A84           00142         INCF FSR, F
+0042   0828           00143         MOVF MULT1, W
+0043   00AA           00144         MOVWF CONT1
+0044   0829           00145         MOVF MULT2, W
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0045   00AB           00146         MOVWF CONT2
+0046   2???           00147         GOTO SAI_INTERUP        
+                      00148 
+0047                  00149 SETA_ESTADO_2
+0047   2???           00150         CALL AJUSTA_ENTRADA
+0048   30A0           00151         MOVLW 0xA0
+0049   0084           00152         MOVWF FSR
+004A   3002           00153         MOVLW .2
+004B   00A7           00154         MOVWF ESTADO
+004C   1685           00155         BSF BUZZER
+004D   3019           00156         MOVLW .25
+004E   00AF           00157         MOVWF CONTBUZZER
+004F   3019           00158         MOVLW .25
+0050   00B0           00159         MOVWF CONTLED
+0051   2???           00160         GOTO SAI_INTERUP
+                      00161 
+0052                  00162 ESTADO_2
+                      00163         ; BUZZER
+0052   08AF           00164         MOVF CONTBUZZER, F
+0053   1903           00165         BTFSC STATUS, Z
+0054   2???           00166         GOTO ESTADO_2_1
+                      00167         
+0055   0BAF           00168         DECFSZ CONTBUZZER, F
+0056   2???           00169         GOTO ESTADO_2_1
+                      00170         
+0057   1285           00171         BCF BUZZER
+0058                  00172 ESTADO_2_1
+0058   08B0           00173         MOVF CONTLED, F
+0059   1903           00174         BTFSC STATUS, Z
+005A   2???           00175         GOTO SAI_INTERUP
+                      00176         
+005B   0BB0           00177         DECFSZ CONTLED, F
+005C   2???           00178         GOTO SAI_INTERUP
+                      00179         
+005D   3000           00180         MOVLW .0
+005E   0088           00181         MOVWF DISPLAY
+005F   3019           00182         MOVLW .25
+0060   00B0           00183         MOVWF CONTLED
+0061   2???           00184         GOTO SAI_INTERUP
+                      00185 
+0062                  00186 APAGA_DISPLAY
+0062   3000           00187         MOVLW .0
+0063   0088           00188         MOVWF DISPLAY
+0064   2???           00189         GOTO SAI_INTERUP_3
+                      00190 
+0065                  00191 ESTADO_3
+0065   08B4           00192         MOVF DELAY2, F
+0066   1903           00193         BTFSC STATUS, Z
+0067   2???           00194         GOTO  ESTADO_3_1
+                      00195 
+0068   0BB4           00196         DECFSZ DELAY2, F
+0069   2???           00197         GOTO APAGA_DISPLAY
+                      00198         
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+006A                  00199 ESTADO_3_1      
+006A   0BB5           00200         DECFSZ DELAY3, F
+006B   2???           00201         GOTO   ACENDE_DISPLAY
+                      00202         
+006C   3064           00203         MOVLW .100
+006D   00B4           00204         MOVWF DELAY2
+006E   3032           00205         MOVLW .50
+006F   00B5           00206         MOVWF DELAY3
+                      00207 
+0070                  00208 ACENDE_DISPLAY  
+0070   0AB1           00209         INCF CONT_UD, F ; PAR/IMPAR
+                      00210         
+                      00211         ; APAGA O DISPLAY
+0071   1386           00212         BCF DEZENA
+0072   1306           00213         BCF UNIDADE
+0073   3000           00214         MOVLW .0
+0074   0088           00215         MOVWF DISPLAY
+                      00216         
+0075   1831           00217         BTFSC CONT_UD,0
+0076   1786           00218         BSF  DEZENA
+0077   1C31           00219         BTFSS CONT_UD, 0
+0078   1706           00220         BSF  UNIDADE
+                      00221 
+0079   0832           00222         MOVF ACERTOS2,W
+007A   1831           00223         BTFSC CONT_UD, 0
+007B   0E32           00224         SWAPF ACERTOS2, W ; ISOLA A DEZENA
+007C   390F           00225         ANDLW 0x0F       ; ISOLA A DEZENA
+                      00226         
+007D   2???           00227         CALL TABELA_DISPLAY_7_SEG
+007E   0088           00228         MOVWF DISPLAY
+007F   2???           00229         GOTO SAI_INTERUP_3
+                      00230 
+0080                  00231 INTERUP
+                      00232         ; SALVA WORK/FLAGS DE TRABALHO
+0080   00A6           00233         MOVWF W_TEMP
+0081   0E03           00234         SWAPF STATUS, W
+0082   0183           00235         CLRF STATUS
+0083   00A5           00236         MOVWF STATUS_TEMP
+                      00237 
+                      00238         ; RANDOM DE 1 A 4 PARA PROXIMA POS
+0084   0AAD           00239         INCF PROX_POS,F
+0085   3005           00240         MOVLW .5
+0086   062D           00241         XORWF PROX_POS, W
+0087   1903           00242         BTFSC STATUS, Z
+0088   2???           00243         CALL AJUSTA_PROX        
+                      00244 
+                      00245         ; MOSTRA PONTUACAO (FORA DO DIVISOR DE 10x)
+0089   3003           00246         MOVLW .3
+008A   0627           00247         XORWF ESTADO, W
+008B   1903           00248         BTFSC STATUS, Z
+008C   2???           00249         GOTO ESTADO_3
+                      00250 
+008D                  00251 SAI_INTERUP_3
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+008D   0BAC           00252         DECFSZ CONTIMER, F
+008E   2???           00253         GOTO SAI_INTERUP_2
+                      00254 
+                      00255         ; MAQUINA DE ESTADOS
+008F   3000           00256         MOVLW .0
+0090   0627           00257         XORWF ESTADO, W
+0091   1903           00258         BTFSC STATUS, Z
+0092   2???           00259         GOTO ESTADO_0
+                      00260         
+0093   3001           00261         MOVLW .1
+0094   0627           00262         XORWF ESTADO, W
+0095   1903           00263         BTFSC STATUS, Z
+0096   2???           00264         GOTO ESTADO_1
+                      00265 
+0097   3002           00266         MOVLW .2
+0098   0627           00267         XORWF ESTADO, W
+0099   1903           00268         BTFSC STATUS, Z
+009A   2???           00269         GOTO ESTADO_2
+                      00270 
+009B                  00271 SAI_INTERUP
+                      00272         ; REGULA O CONTADOR DA INTERUP
+009B   300A           00273         MOVLW .10
+009C   00AC           00274         MOVWF CONTIMER
+                      00275 
+009D                  00276 SAI_INTERUP_2
+                      00277         ; RESTAURA CONTEXTO
+009D   2???           00278         CALL RESET_TIMER
+009E   0E25           00279         SWAPF STATUS_TEMP, W
+009F   0083           00280         MOVWF STATUS
+00A0   0EA6           00281         SWAPF W_TEMP, F
+00A1   0E26           00282         SWAPF W_TEMP, W
+00A2   0009           00283         RETFIE
+                      00284 
+00A3                  00285 INICIO
+00A3   1303           00286         BANK_LOW
+00A4   1283           00287         BANK0
+                      00288         ; MODO DIGITAL
+                      00289         ;MOVLW .7
+                      00290         ;MOVWF ADCON0
+                      00291 
+                      00292         ; CONFIGURA ENTRADAS/SAIDAS
+00A5   1683           00293         BANK1
+00A6   3007           00294         MOVLW .7
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00A7   009C           00295         MOVWF CMCON
+                      00296         ;MOVLW B'00001111' ; BOTOES COMO ENTRADA
+                      00297         ;MOVWF TRISB
+00A8   2???           00298         CALL AJUSTA_ENTRADA
+00A9   1683           00299         BANK1
+00AA   3000           00300         MOVLW B'00000000' ; DISPLAY SAIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00AB   0088           00301         MOVWF TRISD
+00AC   3000           00302         MOVLW B'00000000' ; BUZZER SAIDA
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00AD   0085           00303         MOVWF TRISA
+00AE   1283           00304         BANK0
+                      00305 
+00AF   0188           00306         CLRF PORTD
+00B0   0185           00307         CLRF PORTA
+                      00308         ; LEDS APAGADOS DE INICIO
+00B1   308F           00309         MOVLW B'10001111'
+00B2   0086           00310         MOVWF PORTB
+                      00311 
+                      00312         ; CONFIGURA INTERRUPCAO
+00B3   1683           00313         BANK1
+00B4   3082           00314         MOVLW B'10000010' ; PRESCALE 
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00B5   0081           00315         MOVWF OPTION_REG
+00B6   1283           00316         BANK0
+00B7   300A           00317         MOVLW .10
+00B8   00AC           00318         MOVWF CONTIMER
+                      00319 
+                      00320         ; VALORES INICIAS
+00B9   3000           00321         MOVLW .0
+00BA   00A7           00322         MOVWF ESTADO
+                      00323         
+                      00324         ; GARANTE FSR TRABALHANDO NO BANK0-1
+00BB   1383           00325         BCF STATUS,IRP
+                      00326 
+00BC   3001           00327         MOVLW .1
+00BD   00AD           00328         MOVWF PROX_POS
+                      00329 
+                      00330         ; LIGA INTERRUPCAO
+00BE   2???           00331         CALL RESET_TIMER
+00BF   168B           00332         BSF INTCON, TMR0IE
+00C0   178B           00333         BSF INTCON, GIE
+                      00334 
+                      00335         ; CARREGA DELAY
+00C1   30FF           00336         MOVLW .255      
+00C2   00B3           00337         MOVWF DELAY
+                      00338         
+00C3   2???           00339         GOTO MAIN
+                      00340 
+00C4                  00341 MAIN
+00C4   0BB3           00342         DECFSZ DELAY, F
+00C5   2???           00343         GOTO   MAIN
+                      00344         
+00C6   30FF           00345         MOVLW .255
+00C7   00B3           00346         MOVWF DELAY
+00C8   2???           00347         GOTO TESTA_BT0
+                      00348 
+00C9                  00349 AJUSTA_SAIDA
+00C9   1683           00350         BANK1
+00CA   3000           00351         MOVLW B'00000000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00CB   0086           00352         MOVWF TRISB
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00CC   1283           00353         BANK0
+00CD   0008           00354         RETURN
+                      00355 
+00CE                  00356 AJUSTA_ENTRADA
+00CE   308F           00357         MOVLW B'10001111'
+00CF   0086           00358         MOVWF PORTB
+00D0   1683           00359         BANK1
+00D1   300F           00360         MOVLW B'00001111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00D2   0086           00361         MOVWF TRISB
+00D3   1283           00362         BANK0
+00D4   30FF           00363         MOVLW .255
+00D5   00A0           00364         MOVWF FILTRO_BT0
+00D6   00A1           00365         MOVWF FILTRO_BT1
+00D7   00A2           00366         MOVWF FILTRO_BT2 ; REINICIALIZA FILTRO
+00D8   00A3           00367         MOVWF FILTRO_BT3
+00D9   30FF           00368         MOVLW B'11111111'
+00DA   00A4           00369         MOVWF STATUS_BTS
+00DB   0008           00370         RETURN
+                      00371 
+00DC                  00372 FACIL ; T-ACESO = 2s T-ENTRE = 1s
+                      00373         ; REGULA TEMPO ENTRE OS LEDS
+00DC   3064           00374         MOVLW .100
+00DD   00A8           00375         MOVWF MULT1
+                      00376 
+                      00377         ; REGULA TEMPO LED ACESSO
+00DE   3032           00378         MOVLW .50
+00DF   00A9           00379         MOVWF MULT2
+                      00380 
+00E0   2???           00381         CALL AJUSTA_SAIDA ; REGULA TRISB COMO SAIDA
+00E1   3081           00382         MOVLW B'10000001' ; ACENDE LED 0
+00E2   0086           00383         MOVWF PORTB
+                      00384 
+00E3   2???           00385         GOTO  COMECA_JOGO
+                      00386 
+00E4                  00387 MEDIO ; T-ACESO= 1s T-ENTRE = 500ms
+                      00388         ; REGULA TEMPO ENTRE OS LEDS
+00E4   3032           00389         MOVLW .50
+00E5   00A8           00390         MOVWF MULT1
+                      00391 
+                      00392         ; REGULA TEMPO LED ACESSO
+00E6   3019           00393         MOVLW .25
+00E7   00A9           00394         MOVWF MULT2
+                      00395 
+00E8   2???           00396         CALL AJUSTA_SAIDA ; REGULA TRISB COMO SAIDA
+00E9   3082           00397         MOVLW B'10000010' ; ACENDE LED 1
+00EA   0086           00398         MOVWF PORTB
+00EB   2???           00399         GOTO  COMECA_JOGO
+                      00400 
+00EC                  00401 DIFICIL ; T-ACESO = 800ms T-ENTRE = 200ms
+                      00402         ; REGULA TEMPO ENTRE OS LEDS
+00EC   3028           00403         MOVLW .40
+00ED   00A8           00404         MOVWF MULT1
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00405 
+                      00406         ; REGULA TEMPO LED ACESSO
+00EE   300A           00407         MOVLW .10
+00EF   00A9           00408         MOVWF MULT2
+                      00409 
+00F0   2???           00410         CALL AJUSTA_SAIDA ; REGULA TRISB COMO SAIDA
+00F1   3084           00411         MOVLW B'10000100' ; ACENDE LED 2
+00F2   0086           00412         MOVWF PORTB
+00F3   2???           00413         GOTO  COMECA_JOGO
+                      00414 
+00F4                  00415 COMECA_JOGO
+                      00416         ; CARREGA VALORES DA DIFICULDADE
+00F4   0828           00417         MOVF  MULT1, W
+00F5   00AA           00418         MOVWF CONT1
+00F6   0829           00419         MOVF  MULT2, W
+00F7   00AB           00420         MOVWF CONT2
+                      00421         
+                      00422         ; PEGA PRIMEIRA POSICAO
+00F8   30A0           00423         MOVLW 0xA0
+00F9   0084           00424         MOVWF FSR
+00FA   082D           00425         MOVF  PROX_POS, W
+00FB   0080           00426         MOVWF INDF
+                      00427         
+                      00428         ; VALOR PADRAO
+00FC   3000           00429         MOVLW .0
+00FD   00AE           00430         MOVWF ACERTOS
+00FE   00B2           00431         MOVWF ACERTOS2
+                      00432         
+                      00433         ; RESETA O TEMPO PARA GARANTIR UNIFORME
+00FF   2???           00434         CALL RESET_TIMER
+0100   300A           00435         MOVLW .10
+0101   00AC           00436         MOVWF CONTIMER
+                      00437 
+                      00438         ; MODO EXIBICAO
+0102   3001           00439         MOVLW .1
+0103   00A7           00440         MOVWF ESTADO
+                      00441 
+0104   2???           00442         GOTO MAIN
+                      00443 
+0105                  00444 APERTA_0
+0105   3001           00445         MOVLW .1
+0106   2???           00446         CALL TABELA_DISPLAY_7_SEG
+0107   0088           00447         MOVWF DISPLAY
+0108   3001           00448         MOVLW .1
+0109   2???           00449         GOTO FAZ_JOGADA
+                      00450 
+010A                  00451 APERTA_1
+010A   3002           00452         MOVLW .2
+010B   2???           00453         CALL TABELA_DISPLAY_7_SEG
+010C   0088           00454         MOVWF DISPLAY
+010D   3002           00455         MOVLW .2
+010E   2???           00456         GOTO FAZ_JOGADA
+                      00457 
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+010F                  00458 APERTA_2
+010F   3003           00459         MOVLW .3
+0110   2???           00460         CALL TABELA_DISPLAY_7_SEG
+0111   0088           00461         MOVWF DISPLAY
+0112   3003           00462         MOVLW .3
+0113   2???           00463         GOTO FAZ_JOGADA
+                      00464 
+0114                  00465 APERTA_3
+0114   3004           00466         MOVLW .4
+0115   2???           00467         CALL TABELA_DISPLAY_7_SEG
+0116   0088           00468         MOVWF DISPLAY
+0117   3004           00469         MOVLW .4
+0118   2???           00470         GOTO FAZ_JOGADA
+                      00471 
+0119                  00472 FAZ_JOGADA
+0119   0600           00473         XORWF INDF, W
+011A   1903           00474         BTFSC STATUS,Z 
+011B   2???           00475         GOTO  ACERTOU
+                      00476 
+                      00477         ; ERROU
+011C   2???           00478         CALL AJUSTA_ENTRADA
+011D   3064           00479         MOVLW .100
+011E   00B4           00480         MOVWF DELAY2
+011F   3032           00481         MOVLW .50
+0120   00B5           00482         MOVWF DELAY3
+                      00483 
+0121   3003           00484         MOVLW .3
+0122   00A7           00485         MOVWF ESTADO
+0123   2???           00486         GOTO MAIN
+                      00487 
+0124                  00488 ACERTOU
+                      00489         ; VERIFICA SE ESTA NA ULTIMA POSICAO
+0124   30A0           00490         MOVLW 0xA0
+0125   072E           00491         ADDWF ACERTOS, W
+0126   0604           00492         XORWF FSR, W
+0127   1903           00493         BTFSC STATUS, Z
+0128   2???           00494         GOTO ULT_POS
+                      00495         
+                      00496         ; SENAO ESTIVER VAMOS VER A PROXIMA POSICAO
+0129   0A84           00497         INCF FSR, F
+012A   2???           00498         GOTO MAIN
+                      00499 
+012B                  00500 ULT_POS
+012B   2???           00501         CALL AJUSTA_SAIDA
+012C   0AAE           00502         INCF ACERTOS, F
+                      00503 
+012D   0AB2           00504         INCF ACERTOS2, F
+                      00505         ; CORRIGE O VALOR
+012E   0832           00506         MOVF ACERTOS2, W        
+012F   300F           00507         MOVLW 0x0F
+0130   0532           00508         ANDWF ACERTOS2, W
+0131   3A0A           00509         XORLW 0x0A
+0132   1D03           00510         BTFSS STATUS,Z
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0133   2???           00511         GOTO  SEM_COR
+                      00512         
+0134   3006           00513         MOVLW 0x06
+0135   07B2           00514         ADDWF ACERTOS2, F
+                      00515 
+0136                  00516 SEM_COR
+0136   0A84           00517         INCF FSR,F
+0137   082D           00518         MOVF  PROX_POS, W
+0138   0080           00519         MOVWF INDF
+                      00520 
+0139   30A0           00521         MOVLW 0xA0
+013A   0084           00522         MOVWF FSR
+                      00523 
+013B   3001           00524         MOVLW .1
+013C   00A7           00525         MOVWF ESTADO
+013D   0828           00526         MOVF MULT1, W
+013E   00AA           00527         MOVWF CONT1
+013F   0829           00528         MOVF MULT2, W
+0140   00AB           00529         MOVWF CONT2
+                      00530 
+0141   2???           00531         GOTO MAIN
+                      00532         
+0142                  00533 TESTA_BT0
+0142   3001           00534         MOVLW .1
+0143   0627           00535         XORWF ESTADO, W
+0144   1903           00536         BTFSC STATUS, Z
+0145   2???           00537         GOTO  MAIN
+                      00538 
+0146   1806           00539         BTFSC BT0               ; BOTÃO 0 PRESSIONADO?
+0147   2???           00540         GOTO BT0_LIB    ; NÃO
+                      00541                                         ; SIM
+0148   1824           00542         BTFSC STATUS_BTS,0
+0149   2???           00543         GOTO TESTA_BT1
+                      00544 
+014A   0BA0           00545         DECFSZ FILTRO_BT0,F ; DECREMENTA FILTRO DO BOTÃO. ACABOU?
+014B   2???           00546         GOTO TESTA_BT1          ; NÃO - TESTA PRÓXIMO BOTÃO
+014C   1424           00547         BSF STATUS_BTS,0        ; SIM - MARCA BOTÃO COMO PRESSIONADO
+                      00548 
+                      00549         ; SELECIONA DIFICULDADE FACIL
+014D   3000           00550         MOVLW .0
+014E   0627           00551         XORWF ESTADO, W
+014F   1903           00552         BTFSC STATUS,Z
+0150   2???           00553         GOTO  FACIL
+                      00554 
+0151   3002           00555         MOVLW .2
+0152   0627           00556         XORWF ESTADO, W
+0153   1903           00557         BTFSC STATUS, Z
+0154   2???           00558         GOTO  APERTA_0
+                      00559 
+0155   3003           00560         MOVLW .3
+0156   0627           00561         XORWF ESTADO, W
+0157   1903           00562         BTFSC STATUS, Z
+0158   2???           00563         GOTO  INICIO
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00564 
+0159   2???           00565         GOTO TESTA_BT1  ; TESTA PRÓXIMO BOTÃO
+                      00566 
+015A                  00567 BT0_LIB
+015A   30FF           00568         MOVLW FILTRO_BTS
+015B   00A0           00569         MOVWF FILTRO_BT0 ; REINICIALIZA FILTRO
+015C   1024           00570         BCF STATUS_BTS,0 ; MARCA BOTÃO COMO LIBERADO
+                      00571 
+015D                  00572 TESTA_BT1
+015D   3001           00573         MOVLW .1
+015E   0627           00574         XORWF ESTADO, W
+015F   1903           00575         BTFSC STATUS, Z
+0160   2???           00576         GOTO  MAIN
+                      00577 
+0161   1886           00578         BTFSC BT1               ; BOTÃO 0 PRESSIONADO?
+0162   2???           00579         GOTO BT1_LIB    ; NÃO
+                      00580                                         ; SIM
+0163   18A4           00581         BTFSC STATUS_BTS,1
+0164   2???           00582         GOTO TESTA_BT2
+                      00583 
+0165   0BA1           00584         DECFSZ FILTRO_BT1,F ; DECREMENTA FILTRO DO BOTÃO. ACABOU?
+0166   2???           00585         GOTO TESTA_BT2          ; NÃO - TESTA PRÓXIMO BOTÃO
+0167   14A4           00586         BSF STATUS_BTS,1        ; SIM - MARCA BOTÃO COMO PRESSIONADO
+                      00587 
+0168   3000           00588         MOVLW .0
+0169   0627           00589         XORWF ESTADO, W
+016A   1903           00590         BTFSC STATUS,Z
+016B   2???           00591         GOTO  MEDIO
+                      00592 
+016C   3002           00593         MOVLW .2
+016D   0627           00594         XORWF ESTADO, W
+016E   1903           00595         BTFSC STATUS, Z
+016F   2???           00596         GOTO  APERTA_1
+                      00597 
+0170   3003           00598         MOVLW .3
+0171   0627           00599         XORWF ESTADO, W
+0172   1903           00600         BTFSC STATUS, Z
+0173   2???           00601         GOTO  INICIO
+                      00602 
+0174   2???           00603         GOTO TESTA_BT2  ; TESTA PRÓXIMO BOTÃO
+                      00604 
+0175                  00605 BT1_LIB
+0175   30FF           00606         MOVLW FILTRO_BTS
+0176   00A1           00607         MOVWF FILTRO_BT1 ; REINICIALIZA FILTRO
+0177   10A4           00608         BCF STATUS_BTS,1 ; MARCA BOTÃO COMO LIBERADO
+                      00609 
+0178                  00610 TESTA_BT2
+0178   3001           00611         MOVLW .1
+0179   0627           00612         XORWF ESTADO, W
+017A   1903           00613         BTFSC STATUS, Z
+017B   2???           00614         GOTO  MAIN
+                      00615 
+017C   1906           00616         BTFSC BT2               ; BOTÃO 0 PRESSIONADO?
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+017D   2???           00617         GOTO BT2_LIB    ; NÃO
+                      00618                                         ; SIM
+017E   1924           00619         BTFSC STATUS_BTS,2
+017F   2???           00620         GOTO TESTA_BT3
+                      00621 
+0180   0BA2           00622         DECFSZ FILTRO_BT2,F ; DECREMENTA FILTRO DO BOTÃO. ACABOU?
+0181   2???           00623         GOTO TESTA_BT3          ; NÃO - TESTA PRÓXIMO BOTÃO
+0182   1524           00624         BSF STATUS_BTS,2        ; SIM - MARCA BOTÃO COMO PRESSIONADO
+                      00625         
+0183   3000           00626         MOVLW .0
+0184   0627           00627         XORWF ESTADO, W
+0185   1903           00628         BTFSC STATUS,Z
+0186   2???           00629         GOTO  DIFICIL
+                      00630 
+0187   3002           00631         MOVLW .2
+0188   0627           00632         XORWF ESTADO, W
+0189   1903           00633         BTFSC STATUS, Z
+018A   2???           00634         GOTO  APERTA_2
+                      00635 
+018B   3003           00636         MOVLW .3
+018C   0627           00637         XORWF ESTADO, W
+018D   1903           00638         BTFSC STATUS, Z
+018E   2???           00639         GOTO  INICIO
+                      00640 
+018F   2???           00641         GOTO TESTA_BT3  ; TESTA PRÓXIMO BOTÃO
+                      00642 
+0190                  00643 BT2_LIB
+0190   30FF           00644         MOVLW FILTRO_BTS
+0191   00A2           00645         MOVWF FILTRO_BT2 ; REINICIALIZA FILTRO
+0192   1124           00646         BCF STATUS_BTS,2 ; MARCA BOTÃO COMO LIBERADO
+                      00647 
+0193                  00648 TESTA_BT3
+0193   3001           00649         MOVLW .1
+0194   0627           00650         XORWF ESTADO, W
+0195   1903           00651         BTFSC STATUS, Z
+0196   2???           00652         GOTO  MAIN
+                      00653 
+0197   1986           00654         BTFSC BT3               ; BOTÃO 1 PRESSIONADO?
+0198   2???           00655         GOTO BT3_LIB    ; NÃO - TRATA BOTÃO COMO LIBERADO
+                      00656                                         ; SIM
+                      00657 
+0199   19A4           00658         BTFSC STATUS_BTS,3
+019A   2???           00659         GOTO MAIN
+                      00660 
+019B   0BA3           00661         DECFSZ FILTRO_BT3,F ; DECREMENTA FILTRO DO BOTÃO. ACABOU?
+019C   2???           00662         GOTO MAIN               ; NÃO - TESTA PRÓXIMO BOTÃO
+019D   15A4           00663         BSF STATUS_BTS,3        ; SIM - MARCA BOTÃO COMO PRESSIONADO
+                      00664 
+019E   3002           00665         MOVLW .2
+019F   0627           00666         XORWF ESTADO, W
+01A0   1903           00667         BTFSC STATUS, Z
+01A1   2???           00668         GOTO  APERTA_3
+                      00669 
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01A2   3003           00670         MOVLW .3
+01A3   0627           00671         XORWF ESTADO, W
+01A4   1903           00672         BTFSC STATUS, Z
+01A5   2???           00673         GOTO  INICIO
+                      00674 
+01A6   2???           00675         GOTO MAIN ; TESTA PRÓXIMO BOTÃO
+                      00676 
+01A7                  00677 BT3_LIB
+01A7   30FA           00678         MOVLW FILTRO_BTS4
+01A8   00A3           00679         MOVWF FILTRO_BT3 ; REINICIALIZA FILTRO
+01A9   11A4           00680         BCF STATUS_BTS,3 ; MARCA BOTÃO COMO LIBERADO
+01AA   2???           00681         GOTO MAIN
+Warning[205]: Found directive in column 1. (END)
+3F71                  00682 END
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACENDE_DISPLAY                    00000070
+ACERTOS                           0000002E
+ACERTOS2                          00000032
+ACERTOU                           00000124
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+AJUSTA_ENTRADA                    000000CE
+AJUSTA_PROX                       00000026
+AJUSTA_SAIDA                      000000C9
+APAGA_DISPLAY                     00000062
+APERTA_0                          00000105
+APERTA_1                          0000010A
+APERTA_2                          0000010F
+APERTA_3                          00000114
+BANK0                             BCF STATUS,RP0
+BANK1                             BSF STATUS,RP0
+BANK_HIGH                         BSF STATUS,RP1
+BANK_LOW                          BCF STATUS,RP1
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRGH                              00000002
+BT0                               PORTB,0
+BT0_LIB                           0000015A
+BT1                               PORTB,1
+BT1_LIB                           00000175
+BT2                               PORTB,2
+BT2_LIB                           00000190
+BT3                               PORTB,3
+BT3_LIB                           000001A7
+BUZZER                            PORTA,5
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+COMECA_JOGO                       000000F4
+CONT1                             0000002A
+CONT2                             0000002B
+CONTBUZZER                        0000002F
+CONTIMER                          0000002C
+CONTLED                           00000030
+CONT_UD                           00000031
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DELAY                             00000033
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+DELAY2                            00000034
+DELAY3                            00000035
+DEZENA                            PORTB,7
+DIFICIL                           000000EC
+DISPLAY                           PORTD
+D_A                               00000005
+D_NOT_A                           00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+ESTADO                            00000027
+ESTADO_0                          00000029
+ESTADO_1                          00000033
+ESTADO_1_1                        00000038
+ESTADO_2                          00000052
+ESTADO_2_1                        00000058
+ESTADO_3                          00000065
+ESTADO_3_1                        0000006A
+F                                 00000001
+FACIL                             000000DC
+FAZ_JOGADA                        00000119
+FERR                              00000002
+FILTRO_BT0                        00000020
+FILTRO_BT1                        00000021
+FILTRO_BT2                        00000022
+FILTRO_BT3                        00000023
+FILTRO_BTS                        000000FF
+FILTRO_BTS4                       000000FA
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+GO_NOT_DONE                       00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+IBF                               00000007
+IBOV                              00000005
+INDF                              00000000
+INICIO                            000000A3
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTERUP                           00000080
+INTF                              00000001
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+IRP                               00000007
+LAMP                              PORTA,0
+LED_ACENDE                        0000002C
+LED_APAGA                         00000030
+MAIN                              000000C4
+MEDIO                             000000E4
+MULT1                             00000028
+MULT2                             00000029
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PROX_POS                          0000002D
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+READ_WRITE                        00000002
+RESET_TIMER                       00000022
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+R_W                               00000002
+S                                 00000003
+SAI_INTERUP                       0000009B
+SAI_INTERUP_2                     0000009D
+SAI_INTERUP_3                     0000008D
+SEM_COR                           00000136
+SEN                               00000000
+SETA_ESTADO_2                     00000047
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+STATUS_BTS                        00000024
+STATUS_TEMP                       00000025
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TABELA_DISPLAY_7_SEG              00000006
+TABELA_LED                        00000018
+TESTA_BT0                         00000142
+TESTA_BT1                         0000015D
+TESTA_BT2                         00000178
+TESTA_BT3                         00000193
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TX8_9                             00000006
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULT_POS                           0000012B
+UNIDADE                           PORTB,6
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+W_TEMP                            00000026
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+MPASM  5.49                          MAIN.ASM   8-12-2013  14:08:46         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+
+Errors   :     0
+Warnings :     6 reported,     0 suppressed
+Messages :     6 reported,     0 suppressed
+
+

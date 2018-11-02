@@ -1,0 +1,44 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Sat Mar 15 21:39:52 2014
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x0000ea
+                   .org_2       code   0x001000    program   0x000004
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000074      
+                            0x001000    0x001001      
+            119 out of 8454 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+             GRAVA_EEPROM   0x000027    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+           GRAVA_PROGRAMA   0x000056    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+                   INICIO   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+                LE_EEPROM   0x00001b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+              LE_PROGRAMA   0x000041    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+                     LOOP   0x00001a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   INICIO   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+                     LOOP   0x00001a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+                LE_EEPROM   0x00001b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+             GRAVA_EEPROM   0x000027    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+              LE_PROGRAMA   0x000041    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+           GRAVA_PROGRAMA   0x000056    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\EEPROM\EEPROM.asm
+
+

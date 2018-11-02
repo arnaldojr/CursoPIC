@@ -1,0 +1,1564 @@
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 #INCLUDE <P16F877A.INC> ; MICROCONTROLADOR UTILIZADO
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F877A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00566         LIST
+                      00002 
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3F71           00003 __CONFIG _BOREN_ON & _CP_OFF & _PWRTE_ON & _WDT_OFF & _LVP_OFF & _XT_OSC ;CONFIGURAÇÃO DOS FUSIVEIS
+                      00004 
+                      00005 #DEFINE BANK0 BCF STATUS,RP0 ; SETA BANK 0 DE MEMORIA
+                      00006 #DEFINE BANK1 BSF STATUS,RP0 ; SETA BANK 1 DE MEMORIA
+                      00007  
+                      00008         CBLOCK 0X20
+  00000020            00009                 W_TEMP
+  00000021            00010                 STATUS_TEMP
+  00000022            00011                 TEMPO1 ;DELAY
+  00000023            00012                 TEMPO2 ;DELAY
+  00000024            00013                 REG
+  00000025            00014                 PWMH
+  00000026            00015                 PWML
+  00000027            00016                 VAR1
+  00000028            00017                 VAR2
+  00000029            00018                 TEMPO3
+  0000002A            00019                 TEMPO4
+  0000002B            00020                 UNIDADE
+  0000002C            00021                 DEZENA
+  0000002D            00022                 CENTENA
+                      00023         ENDC
+                      00024  
+Warning[205]: Found directive in column 1. (ORG)
+0000                  00025 ORG     0X00 ;ENDEREÇO INICIAL DE PROCESSAMENTO
+Warning[203]: Found opcode in column 1. (GOTO)
+0000   2801           00026 GOTO    CONFIGURA
+                      00027  
+                      00028 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00029 ;
+                      00030 ; CONFIGURAÇÃO DOS PORTS DO MICROCONTROLADOR
+                      00031 ;
+                      00032 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                      00033 
+0001                  00034 CONFIGURA
+                      00035 
+Warning[203]: Found opcode in column 1. (CLRF)
+0001   0185           00036 CLRF    PORTA
+Warning[203]: Found opcode in column 1. (CLRF)
+0002   0186           00037 CLRF    PORTB
+Warning[203]: Found opcode in column 1. (CLRF)
+0003   0187           00038 CLRF    PORTC              ; GARANTE TODAS AS SAIDAS EM ZERO
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (CLRF)
+0004   0188           00039 CLRF    PORTD
+Warning[203]: Found opcode in column 1. (CLRF)
+0005   0189           00040 CLRF    PORTE
+                      00041  
+Warning[203]: Found opcode in column 1. (BSF)
+0006   1683           00042 BANK1                              ; ALTERA PARA BANCO 1
+Warning[203]: Found opcode in column 1. (MOVLW)
+0007   30DF           00043 MOVLW   B'11011111'    ; CONFIGURA I/O DO PORTA
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0008   0085           00044 MOVWF   TRISA 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0009   300F           00045 MOVLW   B'00001111'    ; CONFIGURA I/O DO PORTB
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000A   0086           00046 MOVWF   TRISB 
+Warning[203]: Found opcode in column 1. (MOVLW)
+000B   30F9           00047 MOVLW   B'11111001'    ; CONFIGURA I/O DO PORTC
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000C   0087           00048 MOVWF   TRISC 
+Warning[203]: Found opcode in column 1. (MOVLW)
+000D   3000           00049 MOVLW   B'00000000'    ; CONFIGURA I/O DO PORTD
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000E   0088           00050 MOVWF   TRISD 
+Warning[203]: Found opcode in column 1. (MOVLW)
+000F   3000           00051 MOVLW   B'00000000'    ; CONFIGURA I/O DO PORTE
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0010   0089           00052 MOVWF   TRISE 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0011   3087           00053 MOVLW   B'10000111'    ; CONFIGURA OPTION REG
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0012   0081           00054 MOVWF   OPTION_REG
+Warning[203]: Found opcode in column 1. (MOVLW)
+0013   3000           00055 MOVLW   B'00000000'    ; CONFIGURA INTCON
+Warning[203]: Found opcode in column 1. (MOVWF)
+0014   008B           00056 MOVWF   INTCON
+Warning[203]: Found opcode in column 1. (MOVLW)
+0015   3007           00057 MOVLW   B'00000111'    ; CONFIGURA ADCON1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0016   009F           00058 MOVWF   ADCON1 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0017   3007           00059 MOVLW   B'00000111'    ; CONFIGURA CMCON
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0018   009C           00060 MOVWF   CMCON
+Warning[203]: Found opcode in column 1. (BCF)
+0019   1283           00061 BANK0  
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00062 
+                      00063 ;INICIALIZAÇÃO DO PWM 
+                      00064 
+Warning[203]: Found opcode in column 1. (MOVLW)
+001A   300F           00065 MOVLW   B'00001111'
+Warning[203]: Found opcode in column 1. (MOVWF)
+001B   0097           00066 MOVWF   CCP1CON                 ; HABILITA PWM1
+Warning[203]: Found opcode in column 1. (MOVWF)
+001C   009D           00067 MOVWF   CCP2CON                 ; HOBILITA PWM2
+Warning[203]: Found opcode in column 1. (CLRF)
+001D   0195           00068 CLRF    CCPR1L                  ; ZERA O PWM1 0%
+Warning[203]: Found opcode in column 1. (CLRF)
+001E   019B           00069 CLRF    CCPR2L                  ; ZERA O PWM2 0%
+Warning[203]: Found opcode in column 1. (BSF)
+001F   1683           00070 BANK1                                   ; BANCO1
+Warning[203]: Found opcode in column 1. (MOVLW)
+0020   30FF           00071 MOVLW   0XFF
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0021   0092           00072 MOVWF   PR2                     ; RESOLUÇÃO DE 10 BITS
+Warning[203]: Found opcode in column 1. (BCF)
+0022   1283           00073 BANK0                                   ; BANCO0
+Warning[203]: Found opcode in column 1. (BSF)
+0023   1512           00074 BSF             T2CON,TMR2ON    ; TIMER2 LIGADO
+                      00075 
+                      00076 ;;CONFIGURAÇÃO CONVERSOR AD
+Warning[203]: Found opcode in column 1. (MOVLW)
+0024   3041           00077 MOVLW B'01000001'                       
+Warning[203]: Found opcode in column 1. (MOVWF)
+0025   009F           00078 MOVWF ADCON0                    ; AD LIGADO
+Warning[203]: Found opcode in column 1. (BSF)
+0026   1683           00079 BANK1
+Warning[203]: Found opcode in column 1. (MOVLW)
+0027   309F           00080 MOVLW ADCON1
+Warning[203]: Found opcode in column 1. (BCF)
+0028   1283           00081 BANK0
+Warning[203]: Found opcode in column 1. (GOTO)
+0029   2886           00082 GOTO  MAIN
+                      00083  
+                      00084  
+                      00085 
+                      00086 ;SUB-ROTINAS*********************************************************************************
+                      00087  ;*********************************************************************************************
+002A                  00088 ATRASO_4MS
+Warning[203]: Found opcode in column 1. (MOVLW)
+002A   3001           00089 MOVLW .1
+Warning[203]: Found opcode in column 1. (MOVWF)
+002B   00A2           00090 MOVWF TEMPO1
+002C                  00091 TEMPO_1
+Warning[203]: Found opcode in column 1. (MOVLW)
+002C   30FF           00092 MOVLW .255
+Warning[203]: Found opcode in column 1. (MOVWF)
+002D   00A3           00093 MOVWF TEMPO2
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+002E                  00094 TEMPO_2
+Warning[203]: Found opcode in column 1. (DECF)
+002E   03A3           00095 DECF TEMPO2,F
+Warning[203]: Found opcode in column 1. (BTFSS)
+002F   1D03           00096 BTFSS STATUS,Z
+0030   282E           00097  GOTO TEMPO_2
+Warning[203]: Found opcode in column 1. (DECF)
+0031   03A2           00098 DECF TEMPO1,F
+Warning[203]: Found opcode in column 1. (BTFSS)
+0032   1D03           00099 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+0033   282C           00100 GOTO TEMPO_1
+Warning[203]: Found opcode in column 1. (RETURN)
+0034   0008           00101 RETURN
+                      00102  
+0035                  00103 ATRASO_1S
+Warning[203]: Found opcode in column 1. (MOVLW)
+0035   30FF           00104 MOVLW .255
+Warning[203]: Found opcode in column 1. (MOVWF)
+0036   00A9           00105 MOVWF TEMPO3
+0037                  00106 TEMPO_3
+Warning[203]: Found opcode in column 1. (MOVLW)
+0037   30FF           00107 MOVLW .255
+Warning[203]: Found opcode in column 1. (MOVWF)
+0038   00AA           00108 MOVWF TEMPO4
+0039                  00109 TEMPO_4
+Warning[203]: Found opcode in column 1. (DECF)
+0039   03AA           00110 DECF TEMPO4,F
+Warning[203]: Found opcode in column 1. (BTFSS)
+003A   1D03           00111 BTFSS STATUS,Z
+003B   2839           00112  GOTO TEMPO_4
+Warning[203]: Found opcode in column 1. (DECF)
+003C   03A9           00113 DECF TEMPO3,F
+Warning[203]: Found opcode in column 1. (BTFSS)
+003D   1D03           00114 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+003E   2837           00115 GOTO TEMPO_3
+Warning[203]: Found opcode in column 1. (RETURN)
+003F   0008           00116 RETURN
+                      00117  
+                      00118  
+0040                  00119 ESCREVE_COMANDO   ;ENVIA COMANDO AO LCD
+Warning[203]: Found opcode in column 1. (BCF)
+0040   1009           00120 BCF  PORTE,0   ;SINAL DE COMANDO
+Warning[203]: Found opcode in column 1. (NOP)
+0041   0000           00121 NOP
+Warning[203]: Found opcode in column 1. (MOVWF)
+0042   0088           00122 MOVWF PORTD   ;INFORMAÇÃO NA PORTA D
+Warning[203]: Found opcode in column 1. (NOP)
+0043   0000           00123 NOP
+0044   0000           00124  NOP
+Warning[203]: Found opcode in column 1. (BSF)
+0045   1489           00125 BSF  PORTE,1   ;PULSO DE ENABLE
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (NOP)
+0046   0000           00126 NOP
+Warning[203]: Found opcode in column 1. (NOP)
+0047   0000           00127 NOP
+Warning[203]: Found opcode in column 1. (BCF)
+0048   1089           00128 BCF  PORTE,1
+Warning[203]: Found opcode in column 1. (CALL)
+0049   202A           00129 CALL ATRASO_4MS  ;ATRASO DE 1mS
+Warning[203]: Found opcode in column 1. (RETURN)
+004A   0008           00130 RETURN
+004B                  00131 ESCREVE_DADO   ;ESCREVE CARACTERES NO LCD
+Warning[203]: Found opcode in column 1. (BSF)
+004B   1409           00132 BSF  PORTE,0
+Warning[203]: Found opcode in column 1. (NOP)
+004C   0000           00133 NOP
+Warning[203]: Found opcode in column 1. (MOVWF)
+004D   0088           00134 MOVWF PORTD   ;INFORMAÇÃO NA PORTA D
+004E   0000           00135  NOP
+Warning[203]: Found opcode in column 1. (NOP)
+004F   0000           00136 NOP
+Warning[203]: Found opcode in column 1. (BSF)
+0050   1489           00137 BSF  PORTE,1   ;PULSO DE ENABLE
+Warning[203]: Found opcode in column 1. (NOP)
+0051   0000           00138 NOP
+Warning[203]: Found opcode in column 1. (NOP)
+0052   0000           00139 NOP
+Warning[203]: Found opcode in column 1. (BCF)
+0053   1089           00140 BCF  PORTE,1
+Warning[203]: Found opcode in column 1. (CALL)
+0054   202A           00141 CALL ATRASO_4MS  ;ATRASO 1mS
+Warning[203]: Found opcode in column 1. (RETURN)
+0055   0008           00142 RETURN
+                      00143 ;-------INICIALIZAÇÃO DO LCD----
+0056                  00144 INICIA_LCD
+Warning[203]: Found opcode in column 1. (MOVLW)
+0056   3038           00145 MOVLW 0X38
+Warning[203]: Found opcode in column 1. (CALL)
+0057   2040           00146 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (CALL)
+0058   2035           00147 CALL ATRASO_1S
+0059   3038           00148  MOVLW 0X38
+Warning[203]: Found opcode in column 1. (CALL)
+005A   2040           00149 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVLW)
+005B   300C           00150 MOVLW 0X0C
+Warning[203]: Found opcode in column 1. (CALL)
+005C   2040           00151 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVLW)
+005D   3006           00152 MOVLW 0X06
+Warning[203]: Found opcode in column 1. (CALL)
+005E   2040           00153 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVLW)
+005F   3001           00154 MOVLW 0X01
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (CALL)
+0060   2040           00155 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (CALL)
+0061   2035           00156 CALL ATRASO_1S
+Warning[203]: Found opcode in column 1. (RETURN)
+0062   0008           00157 RETURN
+                      00158 ;---------DECODIFICADOR LCD----
+0063                  00159 DECODIFICADOR
+0063   0782           00160  ADDWF PCL,F ;PC<--PC+W
+Warning[203]: Found opcode in column 1. (RETLW)
+0064   3430           00161 RETLW '0'  ;CODIGO ASCII
+Warning[203]: Found opcode in column 1. (RETLW)
+0065   3431           00162 RETLW '1'
+Warning[203]: Found opcode in column 1. (RETLW)
+0066   3432           00163 RETLW '2'
+Warning[203]: Found opcode in column 1. (RETLW)
+0067   3433           00164 RETLW '3'
+Warning[203]: Found opcode in column 1. (RETLW)
+0068   3434           00165 RETLW '4'
+Warning[203]: Found opcode in column 1. (RETLW)
+0069   3435           00166 RETLW '5'
+Warning[203]: Found opcode in column 1. (RETLW)
+006A   3436           00167 RETLW '6'
+Warning[203]: Found opcode in column 1. (RETLW)
+006B   3437           00168 RETLW '7'
+Warning[203]: Found opcode in column 1. (RETLW)
+006C   3438           00169 RETLW '8'
+006D   3439           00170  RETLW '9'
+                      00171 
+                      00172 ;----------PORCENTAGEM-----------
+006E                  00173 PORCENTAGEM
+Warning[203]: Found opcode in column 1. (INCF)
+006E   0AAB           00174 INCF UNIDADE,F
+Warning[203]: Found opcode in column 1. (MOVLW)
+006F   300A           00175 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+0070   022B           00176 SUBWF UNIDADE,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+0071   1D03           00177 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (RETURN)
+0072   0008           00178 RETURN
+Warning[203]: Found opcode in column 1. (MOVLW)
+0073   3000           00179 MOVLW  .0
+Warning[203]: Found opcode in column 1. (MOVWF)
+0074   00AB           00180 MOVWF UNIDADE
+Warning[203]: Found opcode in column 1. (INCF)
+0075   0AAC           00181 INCF DEZENA,F
+Warning[203]: Found opcode in column 1. (MOVLW)
+0076   300A           00182 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+0077   022C           00183 SUBWF DEZENA,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+0078   1D03           00184 BTFSS STATUS,Z
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (RETURN)
+0079   0008           00185 RETURN
+Warning[203]: Found opcode in column 1. (MOVLW)
+007A   3000           00186 MOVLW  .0
+Warning[203]: Found opcode in column 1. (MOVWF)
+007B   00AC           00187 MOVWF DEZENA
+Warning[203]: Found opcode in column 1. (INCF)
+007C   0AAD           00188 INCF CENTENA,F
+Warning[203]: Found opcode in column 1. (MOVLW)
+007D   3001           00189 MOVLW .1
+Warning[203]: Found opcode in column 1. (SUBWF)
+007E   022D           00190 SUBWF CENTENA,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+007F   1D03           00191 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (RETURN)
+0080   0008           00192 RETURN
+Warning[203]: Found opcode in column 1. (MOVLW)
+0081   3000           00193 MOVLW .0
+Warning[203]: Found opcode in column 1. (MOVWF)
+0082   00AB           00194 MOVWF UNIDADE
+Warning[203]: Found opcode in column 1. (MOVWF)
+0083   00AC           00195 MOVWF DEZENA
+Warning[203]: Found opcode in column 1. (MOVWF)
+0084   00AD           00196 MOVWF CENTENA
+Warning[203]: Found opcode in column 1. (RETURN)
+0085   0008           00197 RETURN
+                      00198  
+                      00199  
+                      00200  
+                      00201 ;-------LIMITAR DE 0 ATE 9---------
+                      00202  
+0086                  00203 MAIN
+Warning[203]: Found opcode in column 1. (MOVLW)
+0086   3000           00204 MOVLW 0X00
+Warning[203]: Found opcode in column 1. (MOVWF)
+0087   00A4           00205 MOVWF REG
+Warning[203]: Found opcode in column 1. (MOVLW)
+0088   3000           00206 MOVLW 0X00
+Warning[203]: Found opcode in column 1. (MOVWF)
+0089   00A7           00207 MOVWF VAR1
+Warning[203]: Found opcode in column 1. (MOVLW)
+008A   3000           00208 MOVLW 0X00
+Warning[203]: Found opcode in column 1. (MOVWF)
+008B   00A8           00209 MOVWF VAR2
+Warning[203]: Found opcode in column 1. (CALL)
+008C   202A           00210 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (CALL)
+008D   2056           00211 CALL INICIA_LCD
+008E                  00212 VOLTA2
+Warning[203]: Found opcode in column 1. (MOVLW)
+008E   3080           00213 MOVLW 0X80
+Warning[203]: Found opcode in column 1. (CALL)
+008F   2040           00214 CALL ESCREVE_COMANDO
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (MOVLW)
+0090   3054           00215 MOVLW 'T'
+Warning[203]: Found opcode in column 1. (CALL)
+0091   204B           00216 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0092   3045           00217 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+0093   204B           00218 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0094   304D           00219 MOVLW 'M'
+Warning[203]: Found opcode in column 1. (CALL)
+0095   204B           00220 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0096   3050           00221 MOVLW 'P'
+Warning[203]: Found opcode in column 1. (CALL)
+0097   204B           00222 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0098   303A           00223 MOVLW ':'
+Warning[203]: Found opcode in column 1. (CALL)
+0099   204B           00224 CALL ESCREVE_DADO
+                      00225 
+                      00226 ;;;;COLETANDO UMA AMOSTRA
+Warning[203]: Found opcode in column 1. (BSF)
+009A   151F           00227 BSF  ADCON0,GO
+Warning[203]: Found opcode in column 1. (BTFSC)
+009B   191F           00228 BTFSC ADCON0,GO
+Warning[203]: Found opcode in column 1. (GOTO)
+009C   289B           00229 GOTO $-1
+Warning[203]: Found opcode in column 1. (BTFSC)
+009D   189E           00230 BTFSC ADRESH,1
+Warning[203]: Found opcode in column 1. (MOVLW)
+009E   3031           00231 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+009F   1C9E           00232 BTFSS ADRESH,1
+Warning[203]: Found opcode in column 1. (MOVLW)
+00A0   3030           00233 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00A1   204B           00234 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+00A2   181E           00235 BTFSC ADRESH,0
+Warning[203]: Found opcode in column 1. (MOVLW)
+00A3   3031           00236 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+00A4   1C1E           00237 BTFSS ADRESH,0
+Warning[203]: Found opcode in column 1. (MOVLW)
+00A5   3030           00238 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00A6   204B           00239 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00A7   1B9E           00240 BTFSC ADRESL,7
+Warning[203]: Found opcode in column 1. (MOVLW)
+00A8   3031           00241 MOVLW '1'
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00A9   1F9E           00242 BTFSS ADRESL,7
+Warning[203]: Found opcode in column 1. (MOVLW)
+00AA   3030           00243 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00AB   204B           00244 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00AC   1B1E           00245 BTFSC ADRESL,6
+Warning[203]: Found opcode in column 1. (MOVLW)
+00AD   3031           00246 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00AE   1F1E           00247 BTFSS ADRESL,6
+Warning[203]: Found opcode in column 1. (MOVLW)
+00AF   3030           00248 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00B0   204B           00249 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00B1   1A9E           00250 BTFSC ADRESL,5
+Warning[203]: Found opcode in column 1. (MOVLW)
+00B2   3031           00251 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00B3   1E9E           00252 BTFSS ADRESL,5
+Warning[203]: Found opcode in column 1. (MOVLW)
+00B4   3030           00253 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00B5   204B           00254 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00B6   1A1E           00255 BTFSC ADRESL,4
+Warning[203]: Found opcode in column 1. (MOVLW)
+00B7   3031           00256 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00B8   1E1E           00257 BTFSS ADRESL,4
+Warning[203]: Found opcode in column 1. (MOVLW)
+00B9   3030           00258 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00BA   204B           00259 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00BB   199E           00260 BTFSC ADRESL,3
+Warning[203]: Found opcode in column 1. (MOVLW)
+00BC   3031           00261 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00BD   1D9E           00262 BTFSS ADRESL,3
+Warning[203]: Found opcode in column 1. (MOVLW)
+00BE   3030           00263 MOVLW '0'
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (CALL)
+00BF   204B           00264 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00C0   191E           00265 BTFSC ADRESL,2
+Warning[203]: Found opcode in column 1. (MOVLW)
+00C1   3031           00266 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00C2   1D1E           00267 BTFSS ADRESL,2
+Warning[203]: Found opcode in column 1. (MOVLW)
+00C3   3030           00268 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00C4   204B           00269 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00C5   189E           00270 BTFSC ADRESL,1
+Warning[203]: Found opcode in column 1. (MOVLW)
+00C6   3031           00271 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00C7   1C9E           00272 BTFSS ADRESL,1
+Warning[203]: Found opcode in column 1. (MOVLW)
+00C8   3030           00273 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00C9   204B           00274 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (BTFSC)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00CA   181E           00275 BTFSC ADRESL,0
+Warning[203]: Found opcode in column 1. (MOVLW)
+00CB   3031           00276 MOVLW '1'
+Warning[203]: Found opcode in column 1. (BTFSS)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00CC   1C1E           00277 BTFSS ADRESL,0
+Warning[203]: Found opcode in column 1. (MOVLW)
+00CD   3030           00278 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+00CE   204B           00279 CALL ESCREVE_DADO
+                      00280 ;FAZER A LEITURA DE ADRESH(BANCO 0) E ADRESL(BANCO 1)
+                      00281 
+00CF                  00282 LOOP2
+Warning[203]: Found opcode in column 1. (BTFSC)
+00CF   1806           00283 BTFSC PORTB,0  ;O BOTÃO 0 ESTÁ PRESSIONADO?
+Warning[203]: Found opcode in column 1. (GOTO)
+00D0   28D2           00284 GOTO BOT2  ;NÃO, ENTÃO TRATA BOTÃO LIBERADO
+Warning[203]: Found opcode in column 1. (GOTO)
+00D1   28DB           00285 GOTO INCREMENTA
+00D2                  00286 BOT2
+Warning[203]: Found opcode in column 1. (BTFSC)
+00D2   1886           00287 BTFSC PORTB,1  ; BOTÃO 1 ESTÁ PRESSIONADO?
+00D3   28D5           00288  GOTO BOT3  ;NÃO, ENTÃO TRATA BOTÃO LIBERADO
+Warning[203]: Found opcode in column 1. (GOTO)
+00D4   28FB           00289 GOTO DECREMENTA
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00D5                  00290 BOT3
+Warning[203]: Found opcode in column 1. (BTFSC)
+00D5   1906           00291 BTFSC PORTB,2  ;O BOTÃO 0 ESTÁ PRESSIONADO?
+Warning[203]: Found opcode in column 1. (GOTO)
+00D6   28D8           00292 GOTO BOT4  ;NÃO, ENTÃO TRATA BOTÃO LIBERADO
+Warning[203]: Found opcode in column 1. (GOTO)
+00D7   291B           00293 GOTO INCREMENTA_10
+00D8                  00294 BOT4
+Warning[203]: Found opcode in column 1. (BTFSC)
+00D8   1986           00295 BTFSC PORTB,3  ; BOTÃO 1 ESTÁ PRESSIONADO?
+00D9   288E           00296  GOTO VOLTA2  ;NÃO, ENTÃO TRATA BOTÃO LIBERADO
+Warning[203]: Found opcode in column 1. (GOTO)
+00DA   2966           00297 GOTO DECREMENTA_10
+                      00298 ;;;;;;;;;;;;;;;;;;;INCREMENTA----------------------
+00DB                  00299 INCREMENTA
+Warning[203]: Found opcode in column 1. (MOVLW)
+00DB   3001           00300 MOVLW 0X01
+Warning[203]: Found opcode in column 1. (CALL)
+00DC   2040           00301 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (CALL)
+00DD   202A           00302 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (MOVLW)
+00DE   30C0           00303 MOVLW 0XC0    ;CURSOR DO DISPLAY NA SEGUNDA LINHA
+Warning[203]: Found opcode in column 1. (CALL)
+00DF   2040           00304 CALL ESCREVE_COMANDO
+00E0   3049           00305  MOVLW 'I'
+Warning[203]: Found opcode in column 1. (CALL)
+00E1   204B           00306 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00E2   304E           00307 MOVLW 'N'
+Warning[203]: Found opcode in column 1. (CALL)
+00E3   204B           00308 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00E4   3043           00309 MOVLW 'C'
+Warning[203]: Found opcode in column 1. (CALL)
+00E5   204B           00310 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00E6   3052           00311 MOVLW 'R'
+Warning[203]: Found opcode in column 1. (CALL)
+00E7   204B           00312 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00E8   3045           00313 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+00E9   204B           00314 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00EA   304D           00315 MOVLW 'M'
+00EB   204B           00316  CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00EC   3045           00317 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+00ED   204B           00318 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00EE   304E           00319 MOVLW 'N'
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (CALL)
+00EF   204B           00320 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00F0   3054           00321 MOVLW 'T'
+Warning[203]: Found opcode in column 1. (CALL)
+00F1   204B           00322 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+00F2   3041           00323 MOVLW 'A'
+Warning[203]: Found opcode in column 1. (CALL)
+00F3   204B           00324 CALL ESCREVE_DADO
+                      00325 
+Warning[203]: Found opcode in column 1. (MOVF)
+00F4   0815           00326 MOVF CCPR1L,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+00F5   00A5           00327 MOVWF PWMH
+00F6   3019           00328  MOVLW .25
+Warning[203]: Found opcode in column 1. (ADDWF)
+00F7   0725           00329 ADDWF PWMH,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+00F8   0095           00330 MOVWF CCPR1L 
+                      00331 ;CALL ESCREVE_DADO
+                      00332 ;INCF REG,F
+                      00333 ;MOVF REG,W
+                      00334 ;SUBLW .10
+                      00335 ;BTFSC STATUS,Z
+                      00336 ;CLRF REG
+                      00337 ;MOVF REG,W
+                      00338 ;CALL DECODIFICADOR
+                      00339 ;CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (CALL)
+00F9   202A           00340 CALL ATRASO_4MS
+00FA   28CF           00341  GOTO    LOOP2
+                      00342  
+                      00343 ;;;;;;;;;;;;;;;DECREMENTA---------------------------------------
+                      00344  
+00FB                  00345 DECREMENTA
+Warning[203]: Found opcode in column 1. (MOVLW)
+00FB   3001           00346 MOVLW 0X01
+Warning[203]: Found opcode in column 1. (CALL)
+00FC   2040           00347 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (CALL)
+00FD   202A           00348 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (MOVLW)
+00FE   30C0           00349 MOVLW 0XC0    ;CURSOR DO DISPLAY NA SEGUNDA LINHA
+Warning[203]: Found opcode in column 1. (CALL)
+00FF   2040           00350 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0100   3044           00351 MOVLW 'D'
+Warning[203]: Found opcode in column 1. (CALL)
+0101   204B           00352 CALL ESCREVE_DADO
+0102   3045           00353  MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+0103   204B           00354 CALL ESCREVE_DADO
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (MOVLW)
+0104   3043           00355 MOVLW 'C'
+Warning[203]: Found opcode in column 1. (CALL)
+0105   204B           00356 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0106   3052           00357 MOVLW 'R'
+Warning[203]: Found opcode in column 1. (CALL)
+0107   204B           00358 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0108   3045           00359 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+0109   204B           00360 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+010A   304D           00361 MOVLW 'M'
+Warning[203]: Found opcode in column 1. (CALL)
+010B   204B           00362 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+010C   3045           00363 MOVLW 'E'
+010D   204B           00364  CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+010E   304E           00365 MOVLW 'N'
+Warning[203]: Found opcode in column 1. (CALL)
+010F   204B           00366 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0110   3054           00367 MOVLW 'T'
+Warning[203]: Found opcode in column 1. (CALL)
+0111   204B           00368 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0112   3041           00369 MOVLW 'A'
+Warning[203]: Found opcode in column 1. (CALL)
+0113   204B           00370 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVF)
+0114   081B           00371 MOVF CCPR2L,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+0115   00A5           00372 MOVWF PWMH
+Warning[203]: Found opcode in column 1. (MOVLW)
+0116   3019           00373 MOVLW .25
+Warning[203]: Found opcode in column 1. (SUBWF)
+0117   0225           00374 SUBWF PWMH,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+0118   009B           00375 MOVWF CCPR2L 
+                      00376 ;CALL ESCREVE_DADO
+                      00377 ;INCF REG,F
+                      00378 ;MOVF REG,W
+                      00379 ;SUBLW .10
+                      00380 ;BTFSC STATUS,Z
+                      00381 ;CLRF REG
+                      00382 ;MOVF REG,W
+                      00383 ;CALL DECODIFICADOR
+                      00384 ;CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (CALL)
+0119   202A           00385 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (GOTO)
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+011A   28CF           00386 GOTO    LOOP2
+                      00387 
+                      00388 ;;;;;;;;;;;;;;;;;;;INCREMENTA  10  ----------------------
+                      00389  
+011B                  00390 INCREMENTA_10
+Warning[203]: Found opcode in column 1. (MOVLW)
+011B   3001           00391 MOVLW 0X01
+Warning[203]: Found opcode in column 1. (CALL)
+011C   2040           00392 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (CALL)
+011D   202A           00393 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (MOVLW)
+011E   30C0           00394 MOVLW 0XC0
+Warning[203]: Found opcode in column 1. (CALL)
+011F   2040           00395 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0120   3049           00396 MOVLW 'I'
+Warning[203]: Found opcode in column 1. (CALL)
+0121   204B           00397 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0122   304E           00398 MOVLW 'N'
+Warning[203]: Found opcode in column 1. (CALL)
+0123   204B           00399 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0124   3043           00400 MOVLW 'C'
+Warning[203]: Found opcode in column 1. (CALL)
+0125   204B           00401 CALL ESCREVE_DADO
+0126   3052           00402  MOVLW 'R'
+Warning[203]: Found opcode in column 1. (CALL)
+0127   204B           00403 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0128   3045           00404 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+0129   204B           00405 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+012A   304D           00406 MOVLW 'M'
+Warning[203]: Found opcode in column 1. (CALL)
+012B   204B           00407 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+012C   3045           00408 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+012D   204B           00409 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+012E   304E           00410 MOVLW 'N'
+Warning[203]: Found opcode in column 1. (CALL)
+012F   204B           00411 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0130   3054           00412 MOVLW 'T'
+0131   204B           00413  CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0132   3041           00414 MOVLW 'A'
+Warning[203]: Found opcode in column 1. (CALL)
+0133   204B           00415 CALL ESCREVE_DADO
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (MOVLW)
+0134   3031           00416 MOVLW '1'
+Warning[203]: Found opcode in column 1. (CALL)
+0135   204B           00417 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0136   3030           00418 MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+0137   204B           00419 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0138   300A           00420 MOVLW .10
+Warning[203]: Found opcode in column 1. (ADDWF)
+0139   07A7           00421 ADDWF VAR1,F
+Warning[203]: Found opcode in column 1. (BTFSC)
+013A   1803           00422 BTFSC STATUS,C
+Warning[203]: Found opcode in column 1. (INCF)
+013B   0AA8           00423 INCF VAR2,F
+                      00424 ;COPIAR O RESULTADO PARA O REGISTRADOR BIT POR BIT
+                      00425  
+Warning[203]: Found opcode in column 1. (BTFSC)
+013C   1827           00426 BTFSC VAR1,0
+Warning[203]: Found opcode in column 1. (BSF)
+013D   1617           00427 BSF  CCP1CON,4
+Warning[203]: Found opcode in column 1. (BTFSS)
+013E   1C27           00428 BTFSS VAR1,0
+Warning[203]: Found opcode in column 1. (BCF)
+013F   1217           00429 BCF  CCP1CON,4
+Warning[203]: Found opcode in column 1. (BTFSC)
+0140   18A7           00430 BTFSC VAR1,1
+Warning[203]: Found opcode in column 1. (BSF)
+0141   1697           00431 BSF  CCP1CON,5
+Warning[203]: Found opcode in column 1. (BTFSS)
+0142   1CA7           00432 BTFSS VAR1,1
+Warning[203]: Found opcode in column 1. (BCF)
+0143   1297           00433 BCF  CCP1CON,5
+Warning[203]: Found opcode in column 1. (BTFSC)
+0144   1927           00434 BTFSC VAR1,2
+Warning[203]: Found opcode in column 1. (BSF)
+0145   1415           00435 BSF  CCPR1L,0
+Warning[203]: Found opcode in column 1. (BTFSS)
+0146   1D27           00436 BTFSS VAR1,2
+Warning[203]: Found opcode in column 1. (BCF)
+0147   1015           00437 BCF  CCPR1L,0
+Warning[203]: Found opcode in column 1. (BTFSC)
+0148   19A7           00438 BTFSC VAR1,3
+0149   1495           00439  BSF  CCPR1L,1
+Warning[203]: Found opcode in column 1. (BTFSS)
+014A   1DA7           00440 BTFSS VAR1,3
+Warning[203]: Found opcode in column 1. (BCF)
+014B   1095           00441 BCF  CCPR1L,1
+Warning[203]: Found opcode in column 1. (BTFSC)
+014C   1A27           00442 BTFSC VAR1,4
+Warning[203]: Found opcode in column 1. (BSF)
+014D   1515           00443 BSF  CCPR1L,2
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (BTFSS)
+014E   1E27           00444 BTFSS VAR1,4
+Warning[203]: Found opcode in column 1. (BCF)
+014F   1115           00445 BCF  CCPR1L,2
+Warning[203]: Found opcode in column 1. (BTFSC)
+0150   1AA7           00446 BTFSC VAR1,5
+Warning[203]: Found opcode in column 1. (BSF)
+0151   1595           00447 BSF  CCPR1L,3
+Warning[203]: Found opcode in column 1. (BTFSS)
+0152   1EA7           00448 BTFSS VAR1,5
+Warning[203]: Found opcode in column 1. (BCF)
+0153   1195           00449 BCF  CCPR1L,3
+Warning[203]: Found opcode in column 1. (BTFSC)
+0154   1B27           00450 BTFSC VAR1,6
+Warning[203]: Found opcode in column 1. (BSF)
+0155   1615           00451 BSF  CCPR1L,4
+0156   1F27           00452  BTFSS VAR1,6
+Warning[203]: Found opcode in column 1. (BCF)
+0157   1215           00453 BCF  CCPR1L,4
+Warning[203]: Found opcode in column 1. (BTFSC)
+0158   1BA7           00454 BTFSC VAR1,7
+Warning[203]: Found opcode in column 1. (BSF)
+0159   1695           00455 BSF  CCPR1L,5
+Warning[203]: Found opcode in column 1. (BTFSS)
+015A   1FA7           00456 BTFSS VAR1,7
+Warning[203]: Found opcode in column 1. (BCF)
+015B   1295           00457 BCF  CCPR1L,5
+Warning[203]: Found opcode in column 1. (BTFSC)
+015C   1828           00458 BTFSC VAR2,0
+Warning[203]: Found opcode in column 1. (BSF)
+015D   1715           00459 BSF  CCPR1L,6
+Warning[203]: Found opcode in column 1. (BTFSS)
+015E   1C28           00460 BTFSS VAR2,0
+Warning[203]: Found opcode in column 1. (BCF)
+015F   1315           00461 BCF  CCPR1L,6
+Warning[203]: Found opcode in column 1. (BTFSC)
+0160   18A8           00462 BTFSC VAR2,1
+Warning[203]: Found opcode in column 1. (BSF)
+0161   1795           00463 BSF  CCPR1L,7
+Warning[203]: Found opcode in column 1. (BTFSS)
+0162   1CA8           00464 BTFSS VAR2,1
+0163   1395           00465  BCF  CCPR1L,7
+Warning[203]: Found opcode in column 1. (CALL)
+0164   202A           00466 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (GOTO)
+0165   28CF           00467 GOTO    LOOP2
+                      00468  
+                      00469 ;;;;;;;;;;;;;;;DECREMENTA   10---------------------------------------
+                      00470  
+0166                  00471 DECREMENTA_10
+Warning[203]: Found opcode in column 1. (MOVLW)
+0166   3001           00472 MOVLW 0X01
+Warning[203]: Found opcode in column 1. (CALL)
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0167   2040           00473 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (CALL)
+0168   202A           00474 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (MOVLW)
+0169   30C0           00475 MOVLW 0XC0
+Warning[203]: Found opcode in column 1. (CALL)
+016A   2040           00476 CALL ESCREVE_COMANDO
+016B   3044           00477  MOVLW 'D'
+Warning[203]: Found opcode in column 1. (CALL)
+016C   204B           00478 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+016D   3045           00479 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+016E   204B           00480 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+016F   3043           00481 MOVLW 'C'
+Warning[203]: Found opcode in column 1. (CALL)
+0170   204B           00482 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0171   3052           00483 MOVLW 'R'
+Warning[203]: Found opcode in column 1. (CALL)
+0172   204B           00484 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0173   3045           00485 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+0174   204B           00486 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0175   304D           00487 MOVLW 'M'
+0176   204B           00488  CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0177   3045           00489 MOVLW 'E'
+Warning[203]: Found opcode in column 1. (CALL)
+0178   204B           00490 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0179   304E           00491 MOVLW 'N'
+Warning[203]: Found opcode in column 1. (CALL)
+017A   204B           00492 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+017B   3054           00493 MOVLW 'T'
+Warning[203]: Found opcode in column 1. (CALL)
+017C   204B           00494 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+017D   3041           00495 MOVLW 'A'
+Warning[203]: Found opcode in column 1. (CALL)
+017E   204B           00496 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+017F   3031           00497 MOVLW '1'
+Warning[203]: Found opcode in column 1. (CALL)
+0180   204B           00498 CALL ESCREVE_DADO
+0181   3030           00499  MOVLW '0'
+Warning[203]: Found opcode in column 1. (CALL)
+0182   204B           00500 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0183   300A           00501 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+0184   02A7           00502 SUBWF VAR1,F
+Warning[203]: Found opcode in column 1. (BTFSC)
+0185   1903           00503 BTFSC STATUS,Z
+Warning[203]: Found opcode in column 1. (DECF)
+0186   03A8           00504 DECF VAR2,F
+                      00505 ;COPIAR O RESULTADO PARA O REGISTRADOR BIT POR BIT
+Warning[203]: Found opcode in column 1. (BTFSC)
+0187   1827           00506 BTFSC VAR1,0
+Warning[203]: Found opcode in column 1. (BSF)
+0188   1617           00507 BSF  CCP1CON,4
+Warning[203]: Found opcode in column 1. (BTFSS)
+0189   1C27           00508 BTFSS VAR1,0
+Warning[203]: Found opcode in column 1. (BCF)
+018A   1217           00509 BCF  CCP1CON,4
+                      00510  
+Warning[203]: Found opcode in column 1. (BTFSC)
+018B   18A7           00511 BTFSC VAR1,1
+Warning[203]: Found opcode in column 1. (BSF)
+018C   1697           00512 BSF  CCP1CON,5
+Warning[203]: Found opcode in column 1. (BTFSS)
+018D   1CA7           00513 BTFSS VAR1,1
+Warning[203]: Found opcode in column 1. (BCF)
+018E   1297           00514 BCF  CCP1CON,5
+Warning[203]: Found opcode in column 1. (BTFSC)
+018F   1927           00515 BTFSC VAR1,2
+Warning[203]: Found opcode in column 1. (BSF)
+0190   1415           00516 BSF  CCPR1L,0
+Warning[203]: Found opcode in column 1. (BTFSS)
+0191   1D27           00517 BTFSS VAR1,2
+Warning[203]: Found opcode in column 1. (BCF)
+0192   1015           00518 BCF  CCPR1L,0
+Warning[203]: Found opcode in column 1. (BTFSC)
+0193   19A7           00519 BTFSC VAR1,3
+Warning[203]: Found opcode in column 1. (BSF)
+0194   1495           00520 BSF  CCPR1L,1
+Warning[203]: Found opcode in column 1. (BTFSS)
+0195   1DA7           00521 BTFSS VAR1,3
+Warning[203]: Found opcode in column 1. (BCF)
+0196   1095           00522 BCF  CCPR1L,1
+Warning[203]: Found opcode in column 1. (BTFSC)
+0197   1A27           00523 BTFSC VAR1,4
+0198   1515           00524  BSF  CCPR1L,2
+Warning[203]: Found opcode in column 1. (BTFSS)
+0199   1E27           00525 BTFSS VAR1,4
+Warning[203]: Found opcode in column 1. (BCF)
+019A   1115           00526 BCF  CCPR1L,2
+Warning[203]: Found opcode in column 1. (BTFSC)
+019B   1AA7           00527 BTFSC VAR1,5
+Warning[203]: Found opcode in column 1. (BSF)
+019C   1595           00528 BSF  CCPR1L,3
+Warning[203]: Found opcode in column 1. (BTFSS)
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 19
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+019D   1EA7           00529 BTFSS VAR1,5
+Warning[203]: Found opcode in column 1. (BCF)
+019E   1195           00530 BCF  CCPR1L,3
+Warning[203]: Found opcode in column 1. (BTFSC)
+019F   1B27           00531 BTFSC VAR1,6
+Warning[203]: Found opcode in column 1. (BSF)
+01A0   1615           00532 BSF  CCPR1L,4
+Warning[203]: Found opcode in column 1. (BTFSS)
+01A1   1F27           00533 BTFSS VAR1,6
+Warning[203]: Found opcode in column 1. (BCF)
+01A2   1215           00534 BCF  CCPR1L,4
+Warning[203]: Found opcode in column 1. (BTFSC)
+01A3   1BA7           00535 BTFSC VAR1,7
+Warning[203]: Found opcode in column 1. (BSF)
+01A4   1695           00536 BSF  CCPR1L,5
+01A5   1FA7           00537  BTFSS VAR1,7
+Warning[203]: Found opcode in column 1. (BCF)
+01A6   1295           00538 BCF  CCPR1L,5
+Warning[203]: Found opcode in column 1. (BTFSC)
+01A7   1828           00539 BTFSC VAR2,0
+Warning[203]: Found opcode in column 1. (BSF)
+01A8   1715           00540 BSF  CCPR1L,6
+Warning[203]: Found opcode in column 1. (BTFSS)
+01A9   1C28           00541 BTFSS VAR2,0
+Warning[203]: Found opcode in column 1. (BCF)
+01AA   1315           00542 BCF  CCPR1L,6
+Warning[203]: Found opcode in column 1. (BTFSC)
+01AB   18A8           00543 BTFSC VAR2,1
+Warning[203]: Found opcode in column 1. (BSF)
+01AC   1795           00544 BSF  CCPR1L,7
+Warning[203]: Found opcode in column 1. (BTFSS)
+01AD   1CA8           00545 BTFSS VAR2,1
+Warning[203]: Found opcode in column 1. (BCF)
+01AE   1395           00546 BCF  CCPR1L,7
+Warning[203]: Found opcode in column 1. (CALL)
+01AF   202A           00547 CALL ATRASO_4MS
+Warning[203]: Found opcode in column 1. (GOTO)
+01B0   28CF           00548 GOTO    LOOP2
+                      00549  
+                      00550  END
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ATRASO_1S                         00000035
+ATRASO_4MS                        0000002A
+BANK0                             BCF STATUS,RP0
+BANK1                             BSF STATUS,RP0
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BOT2                              000000D2
+BOT3                              000000D5
+BOT4                              000000D8
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CENTENA                           0000002D
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+CONFIGURA                         00000001
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DECODIFICADOR                     00000063
+DECREMENTA                        000000FB
+DECREMENTA_10                     00000166
+DEZENA                            0000002C
+D_A                               00000005
+D_NOT_A                           00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+ESCREVE_COMANDO                   00000040
+ESCREVE_DADO                      0000004B
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+GO_NOT_DONE                       00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+IBF                               00000007
+IBOV                              00000005
+INCREMENTA                        000000DB
+INCREMENTA_10                     0000011B
+INDF                              00000000
+INICIA_LCD                        00000056
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LOOP2                             000000CF
+MAIN                              00000086
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORCENTAGEM                       0000006E
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+PWMH                              00000025
+PWML                              00000026
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 24
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+READ_WRITE                        00000002
+REG                               00000024
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SEN                               00000000
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+STATUS_TEMP                       00000021
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TEMPO1                            00000022
+TEMPO2                            00000023
+TEMPO3                            00000029
+TEMPO4                            0000002A
+TEMPO_1                           0000002C
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 25
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TEMPO_2                           0000002E
+TEMPO_3                           00000037
+TEMPO_4                           00000039
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+UNIDADE                           0000002B
+VAR1                              00000027
+VAR2                              00000028
+VOLTA2                            0000008E
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+W_TEMP                            00000020
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+MPASM  5.50                      LCDPWMAD.ASM   11-19-2013  15:57:33         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX X---------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   433
+Program Memory Words Free:  7759
+
+
+Errors   :     0
+Warnings :   410 reported,     0 suppressed
+Messages :    25 reported,     0 suppressed
+
+

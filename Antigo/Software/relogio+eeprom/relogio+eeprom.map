@@ -1,0 +1,104 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Sat Mar 15 21:27:00 2014
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000002
+                   .org_2       code   0x000004    program   0x000374
+.config_2007_RELOGIO+EEPROM.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000000      
+                            0x000004    0x0001bd      
+                            0x002007    0x002007      
+            444 out of 8454 program addresses used, program memory utilization is 5%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                ALTERADHR   0x00003c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 ALTERAHR   0x000033    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                ALTERAHR4   0x000035    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+             ATRASO_100MS   0x000071    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+               ATRASO_1MS   0x000064    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                ATRASO_1S   0x00006a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     BOT1   0x0001b4    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     BOT2   0x0001b7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     BOT3   0x0001ba    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                CONFIGURA   0x00004e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  DECODER   0x000043    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+          ESCREVE_COMANDO   0x000096    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+             ESCREVE_DADO   0x00008b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 EXIBEDHR   0x0000bf    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                EXIBEDMIN   0x0000b3    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                EXIBEDSEG   0x0000a7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  EXIBEHR   0x0000b9    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 EXIBEMIN   0x0000ad    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 EXIBESEG   0x0000a1    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+             GRAVA_EEPROM   0x000107    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+           GRAVA_PROGRAMA   0x000137    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  INCDMIN   0x0000e3    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                    INCHR   0x0000cd    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                   INCMIN   0x0000ef    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+               INICIA_LCD   0x00007c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                   INICIO   0x000156    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                LE_EEPROM   0x0000fb    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+              LE_PROGRAMA   0x000122    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     LOOP   0x000185    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  TEMPO_1   0x000073    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  TEMPO_2   0x000075    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     VOLT   0x00006c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                    VOLTA   0x00003d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                   VOLTA1   0x000066    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 ZERA_SEG   0x0000c5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 ALTERAHR   0x000033    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                ALTERAHR4   0x000035    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                ALTERADHR   0x00003c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                    VOLTA   0x00003d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  DECODER   0x000043    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                CONFIGURA   0x00004e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+               ATRASO_1MS   0x000064    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                   VOLTA1   0x000066    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                ATRASO_1S   0x00006a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     VOLT   0x00006c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+             ATRASO_100MS   0x000071    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  TEMPO_1   0x000073    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  TEMPO_2   0x000075    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+               INICIA_LCD   0x00007c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+             ESCREVE_DADO   0x00008b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+          ESCREVE_COMANDO   0x000096    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 EXIBESEG   0x0000a1    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                EXIBEDSEG   0x0000a7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 EXIBEMIN   0x0000ad    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                EXIBEDMIN   0x0000b3    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  EXIBEHR   0x0000b9    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 EXIBEDHR   0x0000bf    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                 ZERA_SEG   0x0000c5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                    INCHR   0x0000cd    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                  INCDMIN   0x0000e3    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                   INCMIN   0x0000ef    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                LE_EEPROM   0x0000fb    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+             GRAVA_EEPROM   0x000107    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+              LE_PROGRAMA   0x000122    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+           GRAVA_PROGRAMA   0x000137    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                   INICIO   0x000156    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     LOOP   0x000185    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     BOT1   0x0001b4    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     BOT2   0x0001b7    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+                     BOT3   0x0001ba    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\relogio+eeprom\relogio+eeprom.asm
+
+

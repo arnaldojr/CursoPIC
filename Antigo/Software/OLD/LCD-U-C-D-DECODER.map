@@ -1,0 +1,92 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Sat Feb 22 11:55:28 2014
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000326
+.config_2007_LCD-U-C-D-DECODER.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000192      
+                            0x002007    0x002007      
+            404 out of 8454 program addresses used, program memory utilization is 4%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                ATRASO_1S   0x000034    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               ATRASO_1ms   0x000029    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     BOT2   0x00011f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     BOT3   0x000122    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     BOT4   0x000125    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                   CANAL0   0x000067    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                   CANAL1   0x00006f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                 COLETAAD   0x000077    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                CONFIGURA   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+              CONVERTE_AD   0x0000b4    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+            DECODIFICADOR   0x0000d5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               DECREMENTA   0x000130    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+            DECREMENTA_10   0x000165    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+          ESCREVE_COMANDO   0x000044    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+             ESCREVE_DADO   0x00004f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+             EXIBEBINARIO   0x000081    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                EXIBEVOLT   0x0000e0    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               INCREMENTA   0x000129    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+            INCREMENTA_10   0x000137    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               INICIA_LCD   0x00005a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                    LOOP2   0x00011c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     MAIN   0x00010a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                    MAIN2   0x00011c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                 NAOEZERO   0x0000f5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_1   0x00002b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_2   0x00002d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_3   0x000036    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_4   0x000038    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_5   0x00003a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                   VOLTA2   0x000110    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                CONFIGURA   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               ATRASO_1ms   0x000029    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_1   0x00002b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_2   0x00002d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                ATRASO_1S   0x000034    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_3   0x000036    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_4   0x000038    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                  TEMPO_5   0x00003a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+          ESCREVE_COMANDO   0x000044    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+             ESCREVE_DADO   0x00004f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               INICIA_LCD   0x00005a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                   CANAL0   0x000067    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                   CANAL1   0x00006f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                 COLETAAD   0x000077    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+             EXIBEBINARIO   0x000081    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+              CONVERTE_AD   0x0000b4    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+            DECODIFICADOR   0x0000d5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                EXIBEVOLT   0x0000e0    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                 NAOEZERO   0x0000f5    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     MAIN   0x00010a    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                   VOLTA2   0x000110    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                    LOOP2   0x00011c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                    MAIN2   0x00011c    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     BOT2   0x00011f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     BOT3   0x000122    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+                     BOT4   0x000125    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               INCREMENTA   0x000129    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+               DECREMENTA   0x000130    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+            INCREMENTA_10   0x000137    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+            DECREMENTA_10   0x000165    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\LCD-U-C-D-DECODER.asm
+
+

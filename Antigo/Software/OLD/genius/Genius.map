@@ -1,0 +1,124 @@
+MPLINK 4.47, Linker
+Linker Map File - Created Mon Aug 12 14:08:49 2013
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000002
+                   .cinit    romdata   0x000001    program   0x000004
+                   .org_1       code   0x000004    program   0x000002
+                   .org_2       code   0x000006    program   0x00034a
+      .config_2007_MAIN.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000002      
+                            0x000004    0x000004      
+                            0x000006    0x0001aa      
+                            0x002007    0x002007      
+            426 out of 8454 program addresses used, program memory utilization is 5%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+           ACENDE_DISPLAY   0x000070    program     static D:\genius\main.asm       
+                  ACERTOU   0x000124    program     static D:\genius\main.asm       
+           AJUSTA_ENTRADA   0x0000ce    program     static D:\genius\main.asm       
+              AJUSTA_PROX   0x000026    program     static D:\genius\main.asm       
+             AJUSTA_SAIDA   0x0000c9    program     static D:\genius\main.asm       
+            APAGA_DISPLAY   0x000062    program     static D:\genius\main.asm       
+                 APERTA_0   0x000105    program     static D:\genius\main.asm       
+                 APERTA_1   0x00010a    program     static D:\genius\main.asm       
+                 APERTA_2   0x00010f    program     static D:\genius\main.asm       
+                 APERTA_3   0x000114    program     static D:\genius\main.asm       
+                  BT0_LIB   0x00015a    program     static D:\genius\main.asm       
+                  BT1_LIB   0x000175    program     static D:\genius\main.asm       
+                  BT2_LIB   0x000190    program     static D:\genius\main.asm       
+                  BT3_LIB   0x0001a7    program     static D:\genius\main.asm       
+              COMECA_JOGO   0x0000f4    program     static D:\genius\main.asm       
+                  DIFICIL   0x0000ec    program     static D:\genius\main.asm       
+                 ESTADO_0   0x000029    program     static D:\genius\main.asm       
+                 ESTADO_1   0x000033    program     static D:\genius\main.asm       
+               ESTADO_1_1   0x000038    program     static D:\genius\main.asm       
+                 ESTADO_2   0x000052    program     static D:\genius\main.asm       
+               ESTADO_2_1   0x000058    program     static D:\genius\main.asm       
+                 ESTADO_3   0x000065    program     static D:\genius\main.asm       
+               ESTADO_3_1   0x00006a    program     static D:\genius\main.asm       
+                    FACIL   0x0000dc    program     static D:\genius\main.asm       
+               FAZ_JOGADA   0x000119    program     static D:\genius\main.asm       
+                   INICIO   0x0000a3    program     static D:\genius\main.asm       
+                  INTERUP   0x000080    program     static D:\genius\main.asm       
+               LED_ACENDE   0x00002c    program     static D:\genius\main.asm       
+                LED_APAGA   0x000030    program     static D:\genius\main.asm       
+                     MAIN   0x0000c4    program     static D:\genius\main.asm       
+                    MEDIO   0x0000e4    program     static D:\genius\main.asm       
+              RESET_TIMER   0x000022    program     static D:\genius\main.asm       
+              SAI_INTERUP   0x00009b    program     static D:\genius\main.asm       
+            SAI_INTERUP_2   0x00009d    program     static D:\genius\main.asm       
+            SAI_INTERUP_3   0x00008d    program     static D:\genius\main.asm       
+                  SEM_COR   0x000136    program     static D:\genius\main.asm       
+            SETA_ESTADO_2   0x000047    program     static D:\genius\main.asm       
+     TABELA_DISPLAY_7_SEG   0x000006    program     static D:\genius\main.asm       
+               TABELA_LED   0x000018    program     static D:\genius\main.asm       
+                TESTA_BT0   0x000142    program     static D:\genius\main.asm       
+                TESTA_BT1   0x00015d    program     static D:\genius\main.asm       
+                TESTA_BT2   0x000178    program     static D:\genius\main.asm       
+                TESTA_BT3   0x000193    program     static D:\genius\main.asm       
+                  ULT_POS   0x00012b    program     static D:\genius\main.asm       
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+     TABELA_DISPLAY_7_SEG   0x000006    program     static D:\genius\main.asm       
+               TABELA_LED   0x000018    program     static D:\genius\main.asm       
+              RESET_TIMER   0x000022    program     static D:\genius\main.asm       
+              AJUSTA_PROX   0x000026    program     static D:\genius\main.asm       
+                 ESTADO_0   0x000029    program     static D:\genius\main.asm       
+               LED_ACENDE   0x00002c    program     static D:\genius\main.asm       
+                LED_APAGA   0x000030    program     static D:\genius\main.asm       
+                 ESTADO_1   0x000033    program     static D:\genius\main.asm       
+               ESTADO_1_1   0x000038    program     static D:\genius\main.asm       
+            SETA_ESTADO_2   0x000047    program     static D:\genius\main.asm       
+                 ESTADO_2   0x000052    program     static D:\genius\main.asm       
+               ESTADO_2_1   0x000058    program     static D:\genius\main.asm       
+            APAGA_DISPLAY   0x000062    program     static D:\genius\main.asm       
+                 ESTADO_3   0x000065    program     static D:\genius\main.asm       
+               ESTADO_3_1   0x00006a    program     static D:\genius\main.asm       
+           ACENDE_DISPLAY   0x000070    program     static D:\genius\main.asm       
+                  INTERUP   0x000080    program     static D:\genius\main.asm       
+            SAI_INTERUP_3   0x00008d    program     static D:\genius\main.asm       
+              SAI_INTERUP   0x00009b    program     static D:\genius\main.asm       
+            SAI_INTERUP_2   0x00009d    program     static D:\genius\main.asm       
+                   INICIO   0x0000a3    program     static D:\genius\main.asm       
+                     MAIN   0x0000c4    program     static D:\genius\main.asm       
+             AJUSTA_SAIDA   0x0000c9    program     static D:\genius\main.asm       
+           AJUSTA_ENTRADA   0x0000ce    program     static D:\genius\main.asm       
+                    FACIL   0x0000dc    program     static D:\genius\main.asm       
+                    MEDIO   0x0000e4    program     static D:\genius\main.asm       
+                  DIFICIL   0x0000ec    program     static D:\genius\main.asm       
+              COMECA_JOGO   0x0000f4    program     static D:\genius\main.asm       
+                 APERTA_0   0x000105    program     static D:\genius\main.asm       
+                 APERTA_1   0x00010a    program     static D:\genius\main.asm       
+                 APERTA_2   0x00010f    program     static D:\genius\main.asm       
+                 APERTA_3   0x000114    program     static D:\genius\main.asm       
+               FAZ_JOGADA   0x000119    program     static D:\genius\main.asm       
+                  ACERTOU   0x000124    program     static D:\genius\main.asm       
+                  ULT_POS   0x00012b    program     static D:\genius\main.asm       
+                  SEM_COR   0x000136    program     static D:\genius\main.asm       
+                TESTA_BT0   0x000142    program     static D:\genius\main.asm       
+                  BT0_LIB   0x00015a    program     static D:\genius\main.asm       
+                TESTA_BT1   0x00015d    program     static D:\genius\main.asm       
+                  BT1_LIB   0x000175    program     static D:\genius\main.asm       
+                TESTA_BT2   0x000178    program     static D:\genius\main.asm       
+                  BT2_LIB   0x000190    program     static D:\genius\main.asm       
+                TESTA_BT3   0x000193    program     static D:\genius\main.asm       
+                  BT3_LIB   0x0001a7    program     static D:\genius\main.asm       
+
+

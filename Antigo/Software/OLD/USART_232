@@ -1,0 +1,98 @@
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                                                                         *
+; *                               EXEMPLO 0                                 *
+; *                           ENGENHARIA MAUÁ 		                        *
+; *            				  4ºANO ELETRÔNICA       				        *
+; *                                                                         *
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *     DATA : 05/09/2013                                                   *
+; *  	VERSÃO : 0.51                                                       *
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+; *                             DESCRIÇÃO GERAL                             *
+; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+;
+;  TEMPLATE DE USO GERAL.
+;  ESTE MODELO PODE SER USADO PARA FUTUROS PROJETOS
+;
+;* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+;*                     ARQUIVOS DE DEFINIÇÕES                      *
+;* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#INCLUDE <P16F877A.INC>	; MICROCONTROLADOR UTILIZADO
+
+	__CONFIG _BOREN_ON & _CP_OFF & _PWRTE_ON & _WDT_OFF & _LVP_OFF & _HS_OSC
+	
+	
+
+TMP_TX EQU H'20' ;Value to hold received value
+
+ORG 0x00 ;Start vector
+GOTO main
+ORG 0x04 ;Interrupt vector
+GOTO interrupt
+
+main:
+;---Use PORTA as I/O
+CLRF PORTA
+MOVLW D'7' ;Use PORTA as I/O
+MOVWF CMCON ;
+
+BSF STATUS,RP0 ;Switch to BANK1
+CLRF TRISD ;Set all pins of PORTA as output
+;BSF TRISB,4 ;Set PORTB.4 as input
+BCF OPTION_REG,7
+
+;---Configure peripheral interrupts
+MOVLW B'00100000' ;Disable all peripheral interrupts except receiver
+MOVWF PIE1 ;Peripheral interrupt enable/disable
+
+;---Configure general interrupts
+MOVLW B'01000000' ;Disable all interrupts except peripheral
+MOVWF INTCON ;Interrupt control register
+
+;---Configure SPBRG for desired baud rate
+MOVLW D'129' ;We will use 9600 
+MOVWF SPBRG ;baud at 20MHz
+
+;---Configure TXSTA
+MOVLW B'00100100' ;Configure TXSTA as :
+MOVWF TXSTA ;
+;8 bit transmission - 6.bit
+;Transmit enabled - 5.bit
+;Asynchronous mode - 4.bit
+;Enable high speed baud rate - 2.bit
+
+BCF STATUS,RP0 ;Switch to BANK0
+
+MOVLW B'10000000' ;Enable serial port
+MOVWF RCSTA ;Receive status reg
+
+CLRF TMP_TX
+
+BSF INTCON,7 ;Enable all unmasked interrupts
+BSF RCSTA,4 ;Enable USART receive
+
+MAIN_LOOP: ;Continous loop
+;BTFSC PORTB,4 ;Check if the button is pressed
+GOTO MAIN_LOOP ;If not goto continous loop
+MOVF TMP_TX,W ;Load TMP_TX  
+MOVWF TXREG ;to TXREG
+;We load TMP_TX on the interrupt routine,
+;when an information received from RX.
+GOTO MAIN_LOOP ;Continous loop
+
+
+interrupt:
+BCF INTCON,7 ;Disable all interrupts
+BTFSS PIR1,5 ;Check if the RCIF flag is set
+GOTO quit_int ;If not return back to the main loop
+MOVF RCREG,W ;Move the received byte to W
+MOVWF PORTA ;Move W to PORTA
+MOVWF TMP_TX
+BCF PIR1,5
+quit_int:
+RETFIE
+
+END
+

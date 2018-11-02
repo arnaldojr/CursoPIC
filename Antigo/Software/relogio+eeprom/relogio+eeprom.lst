@@ -1,0 +1,1600 @@
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;RELOGIO+LCD+BOTÃO+TIMER0+EEPROM
+                      00002 #INCLUDE <P16F877A.INC>
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F877A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2012 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00566         LIST
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3F71           00003 __CONFIG  _BODEN_ON & _CP_OFF & _PWRTE_ON & _WDT_OFF & _LVP_OFF & _XT_OSC
+                      00004 
+                      00005 #DEFINE BANK0 BCF STATUS,RP0 ; SETA BANK 0 DE MEMORIA
+                      00006 #DEFINE BANK1 BSF STATUS,RP0 ; SETA BANK 1 DE MEMORIA
+                      00007 
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00008 CBLOCK 0X20
+  00000020            00009 W_TEMP
+  00000021            00010 STATUS_TEMP
+  00000022            00011 UMSEG
+  00000023            00012 REG1
+  00000024            00013 CONT
+  00000025            00014 SEG
+  00000026            00015 DSEG
+  00000027            00016 MIN
+  00000028            00017 DMIN
+  00000029            00018 HR
+  0000002A            00019 DHR
+  0000002B            00020 TEMPO1
+  0000002C            00021 TEMPO2
+  0000002D            00022 ADDR
+  0000002E            00023 DADO
+  0000002F            00024 E1 
+  00000030            00025 E2 
+  00000031            00026 DATAL
+  00000032            00027 DATAH
+Warning[205]: Found directive in column 1. (ENDC)
+                      00028 ENDC
+                      00029 
+Warning[205]: Found directive in column 1. (ORG)
+0000                  00030 ORG     0X00
+Warning[203]: Found opcode in column 1. (GOTO)
+0000   2956           00031 GOTO INICIO 
+                      00032 ;----------------------------INICIO DA INTERRUPÇÃO-----------
+Warning[205]: Found directive in column 1. (ORG)
+0004                  00033 ORG     0X04  ;VETOR DE INTERRUPÇÃO
+Warning[203]: Found opcode in column 1. (MOVWF)
+0004   00A0           00034 MOVWF W_TEMP
+Warning[203]: Found opcode in column 1. (SWAPF)
+0005   0E03           00035 SWAPF STATUS,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0006   00A1           00036 MOVWF STATUS_TEMP
+Warning[203]: Found opcode in column 1. (MOVLW)
+0007   30D9           00037 MOVLW .217
+Warning[203]: Found opcode in column 1. (MOVWF)
+0008   0081           00038 MOVWF TMR0
+                      00039 
+Warning[203]: Found opcode in column 1. (INCF)
+0009   0AA2           00040 INCF UMSEG,F
+Warning[203]: Found opcode in column 1. (MOVLW)
+000A   3064           00041 MOVLW .100
+Warning[203]: Found opcode in column 1. (SUBWF)
+000B   0222           00042 SUBWF UMSEG,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+000C   1D03           00043 BTFSS STATUS,Z ;DEU 1SEG?
+Warning[203]: Found opcode in column 1. (GOTO)
+000D   283D           00044 GOTO VOLTA  ;NÃO DEU 1SEG
+Warning[203]: Found opcode in column 1. (CLRF)
+000E   01A2           00045 CLRF UMSEG  ;SIM DEU 1SEG
+                      00046     
+Warning[203]: Found opcode in column 1. (INCF)
+000F   0AA5           00047 INCF SEG,F   ;TESTA SEG 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0010   300A           00048 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+0011   0225           00049 SUBWF SEG,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+0012   1D03           00050 BTFSS STATUS,Z   
+Warning[203]: Found opcode in column 1. (GOTO)
+0013   283D           00051 GOTO VOLTA
+Warning[203]: Found opcode in column 1. (CLRF)
+0014   01A5           00052 CLRF SEG
+                      00053 ;CALL EXIBESEG
+                      00054 
+Warning[203]: Found opcode in column 1. (INCF)
+0015   0AA6           00055 INCF DSEG,F  ;TESTA DSEG
+Warning[203]: Found opcode in column 1. (MOVLW)
+0016   3006           00056 MOVLW .6
+Warning[203]: Found opcode in column 1. (SUBWF)
+0017   0226           00057 SUBWF DSEG,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+0018   1D03           00058 BTFSS STATUS,Z   
+Warning[203]: Found opcode in column 1. (GOTO)
+0019   283D           00059 GOTO VOLTA
+Warning[203]: Found opcode in column 1. (CLRF)
+001A   01A6           00060 CLRF DSEG
+                      00061 ;CALL EXIBEDSEG
+                      00062 
+Warning[203]: Found opcode in column 1. (INCF)
+001B   0AA7           00063 INCF MIN,F   ;TESTA MIN 
+Warning[203]: Found opcode in column 1. (MOVLW)
+001C   300A           00064 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+001D   0227           00065 SUBWF MIN,W
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (BTFSS)
+001E   1D03           00066 BTFSS STATUS,Z   
+Warning[203]: Found opcode in column 1. (GOTO)
+001F   283D           00067 GOTO VOLTA
+Warning[203]: Found opcode in column 1. (CLRF)
+0020   01A7           00068 CLRF MIN
+                      00069 ;CALL EXIBEMIN
+                      00070 
+Warning[203]: Found opcode in column 1. (INCF)
+0021   0AA8           00071 INCF DMIN,F   ;TESTA DMIN 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0022   3006           00072 MOVLW .6
+Warning[203]: Found opcode in column 1. (SUBWF)
+0023   0228           00073 SUBWF DMIN,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+0024   1D03           00074 BTFSS STATUS,Z   
+Warning[203]: Found opcode in column 1. (GOTO)
+0025   283D           00075 GOTO VOLTA
+Warning[203]: Found opcode in column 1. (CLRF)
+0026   01A8           00076 CLRF DMIN
+                      00077 ;CALL EXIBEDMIN
+                      00078 
+                      00079 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0027   3002           00080 MOVLW .2    ;TESTA HR
+Warning[203]: Found opcode in column 1. (SUBWF)
+0028   022A           00081 SUBWF DHR,W
+Warning[203]: Found opcode in column 1. (BTFSC)
+0029   1903           00082 BTFSC STATUS,Z   
+Warning[203]: Found opcode in column 1. (GOTO)
+002A   2835           00083 GOTO ALTERAHR4
+Warning[203]: Found opcode in column 1. (INCF)
+002B   0AA9           00084 INCF HR,F    
+Warning[203]: Found opcode in column 1. (MOVLW)
+002C   300A           00085 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+002D   0229           00086 SUBWF HR,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+002E   1D03           00087 BTFSS STATUS,Z   
+Warning[203]: Found opcode in column 1. (GOTO)
+002F   283D           00088 GOTO VOLTA
+Warning[203]: Found opcode in column 1. (CLRF)
+0030   01A9           00089 CLRF HR
+                      00090 ;CALL EXIBEHR
+                      00091 
+Warning[203]: Found opcode in column 1. (INCF)
+0031   0AAA           00092 INCF DHR,F   ;TESTA DHR 
+                      00093 ;CALL EXIBEDHR
+Warning[203]: Found opcode in column 1. (GOTO)
+0032   283D           00094 GOTO VOLTA
+                      00095 
+0033                  00096 ALTERAHR
+0033   0AA9           00097  INCF HR,F
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0034   283D           00098  GOTO VOLTA
+                      00099 
+0035                  00100 ALTERAHR4
+0035   3003           00101  MOVLW .3
+0036   0229           00102  SUBWF HR,W
+0037   1D03           00103  BTFSS STATUS,Z
+                      00104    
+0038   2833           00105  GOTO ALTERAHR
+0039   01AA           00106  CLRF DHR
+003A   01A9           00107  CLRF HR
+                      00108 ; CALL EXIBEHR
+                      00109 ; CALL EXIBEDHR 
+003B   283D           00110  GOTO VOLTA
+                      00111 
+003C                  00112 ALTERADHR
+003C   283D           00113  GOTO VOLTA
+                      00114 
+003D                  00115 VOLTA
+Warning[203]: Found opcode in column 1. (SWAPF)
+003D   0E21           00116 SWAPF STATUS_TEMP,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+003E   0083           00117 MOVWF STATUS
+Warning[203]: Found opcode in column 1. (SWAPF)
+003F   0EA0           00118 SWAPF W_TEMP,F
+Warning[203]: Found opcode in column 1. (SWAPF)
+0040   0E20           00119 SWAPF W_TEMP,W
+                      00120 
+Warning[203]: Found opcode in column 1. (BCF)
+0041   110B           00121 BCF  INTCON,2
+Warning[203]: Found opcode in column 1. (RETFIE)
+0042   0009           00122 RETFIE
+                      00123 
+                      00124 
+                      00125  
+                      00126 ;----------------FIM DA INTERRUPÇÃO-----------------------
+                      00127 
+                      00128 ;--------------------INICIO SUB ROTINAS------------------------
+Warning[207]: Found label after column 1. (DECODER)
+0043                  00129  DECODER
+0043   0782           00130  ADDWF PCL,F
+0044   3430           00131  RETLW '0'
+0045   3431           00132  RETLW '1'
+0046   3432           00133  RETLW '2'
+0047   3433           00134  RETLW '3'
+0048   3434           00135  RETLW '4'
+0049   3435           00136  RETLW '5'
+004A   3436           00137  RETLW '6'
+004B   3437           00138  RETLW '7'
+004C   3438           00139  RETLW '8'
+004D   3439           00140  RETLW '9'
+                      00141 ;-----------CONFIGURAÇÃO-----------------
+004E                  00142 CONFIGURA
+Warning[203]: Found opcode in column 1. (BSF)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+004E   1683           00143 BANK1      ;ALTERA PARA BANCO 1
+Warning[203]: Found opcode in column 1. (BCF)
+004F   1303           00144 BCF STATUS,RP1;
+Warning[203]: Found opcode in column 1. (MOVLW)
+0050   30FF           00145 MOVLW 0XFF       ; CONFIGURA I/O DO PORTA
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0051   0085           00146 MOVWF TRISA 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0052   300F           00147 MOVLW 0X0F       ; CONFIGURA I/O DO PORTB
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0053   0086           00148 MOVWF TRISB 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0054   30F9           00149 MOVLW B'11111001'    ; CONFIGURA I/O DO PORTC
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0055   0087           00150 MOVWF TRISC 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0056   3000           00151 MOVLW B'00000000'    ; CONFIGURA I/O DO PORTD
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0057   0088           00152 MOVWF TRISD 
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0058   0089           00153 MOVWF TRISE 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0059   3087           00154 MOVLW B'10000111'    ; CONFIGURA OPTION REG
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005A   0081           00155 MOVWF OPTION_REG
+Warning[203]: Found opcode in column 1. (MOVLW)
+005B   3007           00156 MOVLW .7
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005C   009F           00157 MOVWF ADCON1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005D   009C           00158 MOVWF CMCON
+Warning[203]: Found opcode in column 1. (MOVLW)
+005E   30A0           00159 MOVLW B'10100000'    
+Warning[203]: Found opcode in column 1. (MOVWF)
+005F   008B           00160 MOVWF INTCON   ; HABILITA A INTERRUPÇÃO DO TIMER0
+Warning[203]: Found opcode in column 1. (BCF)
+0060   1283           00161 BANK0  
+Warning[203]: Found opcode in column 1. (MOVLW)
+0061   30D9           00162 MOVLW .217
+Warning[203]: Found opcode in column 1. (MOVWF)
+0062   0081           00163 MOVWF TMR0
+Warning[203]: Found opcode in column 1. (RETURN)
+0063   0008           00164 RETURN
+                      00165 ;-----------FIM DA CONFIGURAÇÃO-----------------
+                      00166 ;-------------------ATRASOS ---------------------
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00167 
+Warning[207]: Found label after column 1. (ATRASO_1MS)
+0064                  00168  ATRASO_1MS
+0064   30FF           00169  MOVLW .255
+0065   00A3           00170  MOVWF REG1
+Warning[207]: Found label after column 1. (VOLTA1)
+0066                  00171  VOLTA1
+0066   03A3           00172  DECF REG1,F
+0067   1D03           00173  BTFSS STATUS,Z
+0068   2866           00174  GOTO VOLTA1
+0069   0008           00175  RETURN
+                      00176 
+Warning[207]: Found label after column 1. (ATRASO_1S)
+006A                  00177  ATRASO_1S
+006A   30FF           00178  MOVLW .255
+006B   00A4           00179  MOVWF CONT
+Warning[207]: Found label after column 1. (VOLT)
+006C                  00180  VOLT
+006C   2064           00181  CALL ATRASO_1MS 
+006D   03A4           00182  DECF CONT,F
+006E   1D03           00183  BTFSS STATUS,Z
+006F   286C           00184  GOTO VOLT
+0070   0008           00185  RETURN
+                      00186 
+0071                  00187 ATRASO_100MS
+Warning[203]: Found opcode in column 1. (MOVLW)
+0071   3064           00188 MOVLW .100
+Warning[203]: Found opcode in column 1. (MOVWF)
+0072   00AB           00189 MOVWF TEMPO1
+0073                  00190 TEMPO_1
+Warning[203]: Found opcode in column 1. (MOVLW)
+0073   30FF           00191 MOVLW .255
+Warning[203]: Found opcode in column 1. (MOVWF)
+0074   00AC           00192 MOVWF TEMPO2
+0075                  00193 TEMPO_2
+Warning[203]: Found opcode in column 1. (DECF)
+0075   03AC           00194 DECF TEMPO2,F
+Warning[203]: Found opcode in column 1. (BTFSS)
+0076   1D03           00195 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+0077   2875           00196 GOTO TEMPO_2
+Warning[203]: Found opcode in column 1. (DECF)
+0078   03AB           00197 DECF TEMPO1,F
+Warning[203]: Found opcode in column 1. (BTFSS)
+0079   1D03           00198 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+007A   2873           00199 GOTO TEMPO_1
+Warning[203]: Found opcode in column 1. (RETURN)
+007B   0008           00200 RETURN
+                      00201 
+                      00202 ;------------------------------FIM DOS ATRASOS--------------------------------
+                      00203 ;-----------------------SUB ROTINA DO DISPLAY--------------------
+                      00204 
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[207]: Found label after column 1. (INICIA_LCD)
+007C                  00205  INICIA_LCD
+007C   3038           00206  MOVLW 0X38
+007D   2096           00207  CALL ESCREVE_COMANDO
+007E   2064           00208  CALL ATRASO_1MS
+007F   2064           00209  CALL ATRASO_1MS
+0080   2064           00210  CALL ATRASO_1MS
+0081   3038           00211  MOVLW 0X38
+0082   2096           00212  CALL ESCREVE_COMANDO
+0083   300C           00213  MOVLW 0X0C
+0084   2096           00214  CALL ESCREVE_COMANDO
+0085   3006           00215  MOVLW 0X06
+0086   2096           00216  CALL ESCREVE_COMANDO
+0087   3001           00217  MOVLW 0X01
+0088   2096           00218  CALL ESCREVE_COMANDO
+0089   2064           00219  CALL ATRASO_1MS
+008A   0008           00220  RETURN
+                      00221 
+Warning[207]: Found label after column 1. (ESCREVE_DADO)
+008B                  00222  ESCREVE_DADO ;ESCREVE CARACTERES NO LCD 
+008B   1409           00223  BSF PORTE,0 ;SINAL DE DADO
+008C   0000           00224  NOP
+008D   0088           00225  MOVWF PORTD ;INFORMAÇÃO NA PORTA D DE DAOD
+008E   0000           00226  NOP
+008F   0000           00227  NOP
+0090   1489           00228  BSF PORTE,1 ;PULSO DE ENABLE
+0091   0000           00229  NOP
+0092   0000           00230  NOP
+0093   1089           00231  BCF PORTE,1 
+0094   2064           00232  CALL ATRASO_1MS ;ATRSO DE 1ms
+0095   0008           00233  RETURN
+                      00234 
+Warning[207]: Found label after column 1. (ESCREVE_COMANDO)
+0096                  00235  ESCREVE_COMANDO ;ENVIA COMANDO AO LCD
+0096   1009           00236  BCF PORTE,0 ;SINAL DE COMANDO
+0097   0000           00237  NOP
+0098   0088           00238  MOVWF PORTD ;INFORMAÇÃO NA PORTA D DE DAOD
+0099   0000           00239  NOP
+009A   0000           00240  NOP
+009B   1489           00241  BSF PORTE,1 ;PULSO DE ENABLE
+009C   0000           00242  NOP
+009D   0000           00243  NOP
+009E   1089           00244  BCF PORTE,1 
+009F   2064           00245  CALL ATRASO_1MS ;ATRSO DE 1ms
+00A0   0008           00246  RETURN
+                      00247 ;--------------------------FIM DO DISPLAY------------------------------------
+                      00248 ;------------EXIBE LCD---------------
+00A1                  00249 EXIBESEG
+                      00250 
+Warning[203]: Found opcode in column 1. (MOVLW)
+00A1   308C           00251 MOVLW  0X8C    ;CURSOR DO LCD NAPRIMEIRA LINHA PRIMEIRA COLUNA
+Warning[203]: Found opcode in column 1. (CALL)
+00A2   2096           00252 CALL  ESCREVE_COMANDO
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (MOVF)
+00A3   0825           00253 MOVF SEG,W
+Warning[203]: Found opcode in column 1. (CALL)
+00A4   2043           00254 CALL DECODER
+Warning[203]: Found opcode in column 1. (CALL)
+00A5   208B           00255 CALL  ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (RETURN)
+00A6   0008           00256 RETURN
+                      00257 
+00A7                  00258 EXIBEDSEG
+                      00259 
+Warning[203]: Found opcode in column 1. (MOVLW)
+00A7   308B           00260 MOVLW  0X8B    ;CURSOR DO LCD NAPRIMEIRA LINHA PRIMEIRA COLUNA
+Warning[203]: Found opcode in column 1. (CALL)
+00A8   2096           00261 CALL  ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVF)
+00A9   0826           00262 MOVF DSEG,W
+Warning[203]: Found opcode in column 1. (CALL)
+00AA   2043           00263 CALL DECODER
+Warning[203]: Found opcode in column 1. (CALL)
+00AB   208B           00264 CALL  ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (RETURN)
+00AC   0008           00265 RETURN
+                      00266 
+00AD                  00267 EXIBEMIN
+                      00268 
+Warning[203]: Found opcode in column 1. (MOVLW)
+00AD   3089           00269 MOVLW  0X89    ;CURSOR DO LCD NAPRIMEIRA LINHA PRIMEIRA COLUNA
+Warning[203]: Found opcode in column 1. (CALL)
+00AE   2096           00270 CALL  ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVF)
+00AF   0827           00271 MOVF MIN,W
+Warning[203]: Found opcode in column 1. (CALL)
+00B0   2043           00272 CALL DECODER
+Warning[203]: Found opcode in column 1. (CALL)
+00B1   208B           00273 CALL  ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (RETURN)
+00B2   0008           00274 RETURN
+                      00275 
+00B3                  00276 EXIBEDMIN
+                      00277 
+Warning[203]: Found opcode in column 1. (MOVLW)
+00B3   3088           00278 MOVLW  0X88    ;CURSOR DO LCD NAPRIMEIRA LINHA PRIMEIRA COLUNA
+Warning[203]: Found opcode in column 1. (CALL)
+00B4   2096           00279 CALL  ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVF)
+00B5   0828           00280 MOVF DMIN,W
+Warning[203]: Found opcode in column 1. (CALL)
+00B6   2043           00281 CALL DECODER
+Warning[203]: Found opcode in column 1. (CALL)
+00B7   208B           00282 CALL  ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (RETURN)
+00B8   0008           00283 RETURN
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00284 
+00B9                  00285 EXIBEHR
+                      00286 
+Warning[203]: Found opcode in column 1. (MOVLW)
+00B9   3086           00287 MOVLW  0X86    ;CURSOR DO LCD NAPRIMEIRA LINHA PRIMEIRA COLUNA
+Warning[203]: Found opcode in column 1. (CALL)
+00BA   2096           00288 CALL  ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVF)
+00BB   0829           00289 MOVF HR,W
+Warning[203]: Found opcode in column 1. (CALL)
+00BC   2043           00290 CALL DECODER
+Warning[203]: Found opcode in column 1. (CALL)
+00BD   208B           00291 CALL  ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (RETURN)
+00BE   0008           00292 RETURN
+                      00293 
+00BF                  00294 EXIBEDHR
+                      00295 
+Warning[203]: Found opcode in column 1. (MOVLW)
+00BF   3085           00296 MOVLW  0X85    ;CURSOR DO LCD NAPRIMEIRA LINHA PRIMEIRA COLUNA
+Warning[203]: Found opcode in column 1. (CALL)
+00C0   2096           00297 CALL  ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVF)
+00C1   082A           00298 MOVF DHR,W
+Warning[203]: Found opcode in column 1. (CALL)
+00C2   2043           00299 CALL DECODER
+Warning[203]: Found opcode in column 1. (CALL)
+00C3   208B           00300 CALL  ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (RETURN)
+00C4   0008           00301 RETURN
+                      00302 
+                      00303 
+                      00304 ;----------------TRATAMENTO BOTOES
+00C5                  00305 ZERA_SEG
+Warning[203]: Found opcode in column 1. (CALL)
+00C5   2071           00306 CALL ATRASO_100MS
+Warning[203]: Found opcode in column 1. (BTFSC)
+00C6   1806           00307 BTFSC PORTB,0  ; BOT0 ESTA APERTADO?
+Warning[203]: Found opcode in column 1. (RETURN)
+00C7   0008           00308 RETURN
+Warning[203]: Found opcode in column 1. (BCF)
+00C8   138B           00309 BCF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (CLRF)
+00C9   01A6           00310 CLRF DSEG
+Warning[203]: Found opcode in column 1. (CLRF)
+00CA   01A5           00311 CLRF SEG
+Warning[203]: Found opcode in column 1. (BSF)
+00CB   178B           00312 BSF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (RETURN)
+00CC   0008           00313 RETURN
+                      00314  
+00CD                  00315 INCHR
+Warning[203]: Found opcode in column 1. (CALL)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00CD   2071           00316 CALL ATRASO_100MS
+Warning[203]: Found opcode in column 1. (BTFSC)
+00CE   1986           00317 BTFSC PORTB,3  ; BOT0 ESTA APERTADO?
+Warning[203]: Found opcode in column 1. (RETURN)
+00CF   0008           00318 RETURN    ; NÃO ESTA APERTADO
+                      00319 
+Warning[203]: Found opcode in column 1. (BCF)
+00D0   138B           00320 BCF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (SWAPF)
+00D1   0E2A           00321 SWAPF DHR,W
+Warning[203]: Found opcode in column 1. (IORWF)
+00D2   0429           00322 IORWF HR,W
+Warning[203]: Found opcode in column 1. (SUBLW)
+00D3   3C23           00323 SUBLW 0X23
+Warning[203]: Found opcode in column 1. (BTFSS)
+00D4   1D03           00324 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+00D5   28DA           00325 GOTO $+5
+Warning[203]: Found opcode in column 1. (CLRF)
+00D6   01A9           00326 CLRF HR
+Warning[203]: Found opcode in column 1. (CLRF)
+00D7   01AA           00327 CLRF DHR
+Warning[203]: Found opcode in column 1. (BSF)
+00D8   178B           00328 BSF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (RETURN)
+00D9   0008           00329 RETURN
+                      00330 
+Warning[203]: Found opcode in column 1. (INCF)
+00DA   0AA9           00331 INCF HR,F
+Warning[203]: Found opcode in column 1. (MOVLW)
+00DB   300A           00332 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+00DC   0229           00333 SUBWF HR,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+00DD   1D03           00334 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+00DE   28E1           00335 GOTO $+3
+Warning[203]: Found opcode in column 1. (CLRF)
+00DF   01A9           00336 CLRF HR
+Warning[203]: Found opcode in column 1. (INCF)
+00E0   0AAA           00337 INCF DHR,F
+Warning[203]: Found opcode in column 1. (BSF)
+00E1   178B           00338 BSF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (RETURN)
+00E2   0008           00339 RETURN
+                      00340 
+00E3                  00341 INCDMIN
+Warning[203]: Found opcode in column 1. (CALL)
+00E3   2071           00342 CALL ATRASO_100MS
+Warning[203]: Found opcode in column 1. (BTFSC)
+00E4   1906           00343 BTFSC PORTB,2  ; BOT0 ESTA APERTADO?
+Warning[203]: Found opcode in column 1. (RETURN)
+00E5   0008           00344 RETURN    ; NÃO ESTA APERTADO
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (BCF)
+00E6   138B           00345 BCF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (INCF)
+00E7   0AA8           00346 INCF DMIN,F
+Warning[203]: Found opcode in column 1. (MOVLW)
+00E8   3006           00347 MOVLW .6
+Warning[203]: Found opcode in column 1. (SUBWF)
+00E9   0228           00348 SUBWF DMIN,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+00EA   1D03           00349 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+00EB   28ED           00350 GOTO  $+2
+Warning[203]: Found opcode in column 1. (CLRF)
+00EC   01A8           00351 CLRF DMIN
+Warning[203]: Found opcode in column 1. (BSF)
+00ED   178B           00352 BSF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (RETURN)
+00EE   0008           00353 RETURN
+                      00354  
+00EF                  00355 INCMIN
+Warning[203]: Found opcode in column 1. (CALL)
+00EF   2071           00356 CALL ATRASO_100MS
+Warning[203]: Found opcode in column 1. (BTFSC)
+00F0   1886           00357 BTFSC PORTB,1  ; BOT0 ESTA APERTADO?
+Warning[203]: Found opcode in column 1. (RETURN)
+00F1   0008           00358 RETURN    ; NÃO ESTA APERTADO
+Warning[203]: Found opcode in column 1. (BCF)
+00F2   138B           00359 BCF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (INCF)
+00F3   0AA7           00360 INCF MIN,F
+Warning[203]: Found opcode in column 1. (MOVLW)
+00F4   300A           00361 MOVLW .10
+Warning[203]: Found opcode in column 1. (SUBWF)
+00F5   0227           00362 SUBWF MIN,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+00F6   1D03           00363 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+00F7   28F9           00364 GOTO  $+2
+Warning[203]: Found opcode in column 1. (CLRF)
+00F8   01A7           00365 CLRF MIN
+Warning[203]: Found opcode in column 1. (BSF)
+00F9   178B           00366 BSF  INTCON,GIE
+Warning[203]: Found opcode in column 1. (RETURN)
+00FA   0008           00367 RETURN
+                      00368  
+                      00369 ;-----------------------FIM BOTÕES------------------
+                      00370 
+                      00371 ;--------------------EEPROM---------------------------
+                      00372 
+00FB                  00373 LE_EEPROM
+Warning[203]: Found opcode in column 1. (MOVF)
+00FB   082D           00374 MOVF ADDR,W      ; carregando o endereço em W
+Warning[203]: Found opcode in column 1. (BSF)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00FC   1703           00375 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (BCF)
+00FD   1283           00376 BCF STATUS,RP0   ; banco 2
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00FE   008D           00377 MOVWF EEADR      ; endereçando a EEPROM
+Warning[203]: Found opcode in column 1. (BSF)
+00FF   1683           00378 BSF STATUS,RP0   ; banco 3
+Warning[203]: Found opcode in column 1. (BCF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0100   138C           00379 BCF EECON1,EEPGD ; selecionando a EEPROM e não
+                      00380                  ; a memória de programa
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0101   140C           00381 BSF EECON1,RD    ; comando para a leitura
+Warning[203]: Found opcode in column 1. (BCF)
+0102   1283           00382 BCF STATUS,RP0   ; banco 2
+Warning[203]: Found opcode in column 1. (MOVF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0103   080C           00383 MOVF EEDATA,W    ; carregando o dado lido em W
+Warning[203]: Found opcode in column 1. (BCF)
+0104   1303           00384 BCF STATUS,RP1
+Warning[203]: Found opcode in column 1. (BCF)
+0105   1283           00385 BCF STATUS,RP0   ; voltando ao banco 0
+Warning[203]: Found opcode in column 1. (RETURN)
+0106   0008           00386 RETURN
+                      00387 
+0107                  00388 GRAVA_EEPROM
+Warning[203]: Found opcode in column 1. (BCF)
+0107   138B           00389 BCF INTCON,GIE   ; desabilitando interrupções
+Warning[203]: Found opcode in column 1. (MOVF)
+0108   082D           00390 MOVF ADDR,W      ; carregando o endereço em W
+Warning[203]: Found opcode in column 1. (BSF)
+0109   1703           00391 BSF STATUS,RP1   ; 
+Warning[203]: Found opcode in column 1. (BCF)
+010A   1283           00392 BCF STATUS,RP0   ; banco 2
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+010B   008D           00393 MOVWF EEADR    ; endereçando a EEPROM
+Warning[203]: Found opcode in column 1. (BCF)
+010C   1303           00394 BCF STATUS,RP1   ; banco 0
+Warning[203]: Found opcode in column 1. (MOVF)
+010D   082E           00395 MOVF DADO,W      ; carregando o dado a ser gravado em W
+Warning[203]: Found opcode in column 1. (BSF)
+010E   1703           00396 BSF STATUS,RP1   ; banco 2
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+010F   008C           00397 MOVWF EEDATA   ; carregando W em EEDATA
+Warning[203]: Found opcode in column 1. (BSF)
+0110   1683           00398 BSF STATUS,RP0   ; banco 3
+Warning[203]: Found opcode in column 1. (BCF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0111   138C           00399 BCF EECON1,EEPGD ; selecionando a EEPROM
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0112   150C           00400 BSF EECON1,WREN  ; habilitando a escrita
+Warning[203]: Found opcode in column 1. (MOVLW)
+0113   3055           00401 MOVLW 0X55
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0114   008D           00402 MOVWF EECON2
+Warning[203]: Found opcode in column 1. (MOVLW)
+0115   30AA           00403 MOVLW 0XAA
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0116   008D           00404 MOVWF EECON2   ; comandos para a escrita em EECON2
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0117   148C           00405 BSF EECON1,WR    ; iniciando a escrita
+Warning[203]: Found opcode in column 1. (BCF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0118   110C           00406 BCF EECON1,WREN  ; desabilitando a escrita
+Warning[203]: Found opcode in column 1. (BCF)
+0119   1283           00407 BCF STATUS,RP0
+Warning[203]: Found opcode in column 1. (BCF)
+011A   1303           00408 BCF STATUS,RP1   ; banco 0
+Warning[203]: Found opcode in column 1. (BSF)
+011B   178B           00409 BSF INTCON,GIE ; reabilitando interrupções
+Warning[203]: Found opcode in column 1. (CALL)
+011C   2064           00410 CALL ATRASO_1MS
+Warning[203]: Found opcode in column 1. (CALL)
+011D   2064           00411 CALL ATRASO_1MS
+Warning[203]: Found opcode in column 1. (CALL)
+011E   2064           00412 CALL ATRASO_1MS
+Warning[203]: Found opcode in column 1. (CALL)
+011F   2064           00413 CALL ATRASO_1MS
+Warning[203]: Found opcode in column 1. (CALL)
+0120   2064           00414 CALL ATRASO_1MS
+Warning[203]: Found opcode in column 1. (RETURN)
+0121   0008           00415 RETURN
+                      00416 
+0122                  00417 LE_PROGRAMA
+Warning[203]: Found opcode in column 1. (MOVF)
+0122   082F           00418 MOVF E1,W
+Warning[203]: Found opcode in column 1. (BSF)
+0123   1703           00419 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0124   008F           00420 MOVWF EEADRH
+Warning[203]: Found opcode in column 1. (BCF)
+0125   1303           00421 BCF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVF)
+0126   0830           00422 MOVF E2,W
+Warning[203]: Found opcode in column 1. (BSF)
+0127   1703           00423 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVWF)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0128   008D           00424 MOVWF EEADR 
+Warning[203]: Found opcode in column 1. (BSF)
+0129   1683           00425 BSF STATUS,RP0   ; banco 3
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+012A   178C           00426 BSF EECON1,EEPGD ; selecionando a memória de programa
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+012B   140C           00427 BSF EECON1,RD    ; iniciando a leitura
+Warning[203]: Found opcode in column 1. (NOP)
+012C   0000           00428 NOP
+Warning[203]: Found opcode in column 1. (NOP)
+012D   0000           00429 NOP              ; tempo para a leitura
+Warning[203]: Found opcode in column 1. (BCF)
+012E   1283           00430 BCF STATUS,RP0   ; banco 2
+Warning[203]: Found opcode in column 1. (MOVF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+012F   080C           00431 MOVF EEDATA,W
+Warning[203]: Found opcode in column 1. (BCF)
+0130   1303           00432 BCF STATUS,RP1   ; banco 0
+Warning[203]: Found opcode in column 1. (MOVWF)
+0131   00B1           00433 MOVWF DATAL
+Warning[203]: Found opcode in column 1. (BSF)
+0132   1703           00434 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0133   080E           00435 MOVF EEDATH,W
+Warning[203]: Found opcode in column 1. (BCF)
+0134   1303           00436 BCF STATUS,RP1    ; banco 0
+Warning[203]: Found opcode in column 1. (MOVWF)
+0135   00B2           00437 MOVWF DATAH     
+Warning[203]: Found opcode in column 1. (RETURN)
+0136   0008           00438 RETURN
+                      00439 
+0137                  00440 GRAVA_PROGRAMA
+                      00441 
+Warning[203]: Found opcode in column 1. (MOVF)
+0137   0830           00442 MOVF E2,W
+Warning[203]: Found opcode in column 1. (BSF)
+0138   1703           00443 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0139   008D           00444 MOVWF EEADR      ; parte baixa do endereço
+Warning[203]: Found opcode in column 1. (BCF)
+013A   1303           00445 BCF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVF)
+013B   082F           00446 MOVF E1,W
+Warning[203]: Found opcode in column 1. (BSF)
+013C   1703           00447 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+013D   008F           00448 MOVWF EEADRH     ; parte alta do endereço
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (BCF)
+013E   1303           00449 BCF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVF)
+013F   0831           00450 MOVF DATAL,W
+Warning[203]: Found opcode in column 1. (BSF)
+0140   1703           00451 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0141   008C           00452 MOVWF EEDATA     ; parte baixa do dado
+Warning[203]: Found opcode in column 1. (BCF)
+0142   1303           00453 BCF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVF)
+0143   0832           00454 MOVF DATAH,W
+Warning[203]: Found opcode in column 1. (BSF)
+0144   1703           00455 BSF STATUS,RP1
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0145   008E           00456 MOVWF EEDATH     ; parte alta do dado
+Warning[203]: Found opcode in column 1. (BSF)
+0146   1683           00457 BSF STATUS,RP0   ; banco 3
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0147   178C           00458 BSF EECON1,EEPGD ; selecionando a memória de programa
+Warning[203]: Found opcode in column 1. (BCF)
+0148   138B           00459 BCF INTCON,GIE   ; desabilitando interrupções
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0149   150C           00460 BSF EECON1,WREN  ; habilitando a escrita
+Warning[203]: Found opcode in column 1. (MOVLW)
+014A   3055           00461 MOVLW 0X55
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+014B   008D           00462 MOVWF EECON2
+Warning[203]: Found opcode in column 1. (MOVLW)
+014C   30AA           00463 MOVLW 0XAA
+Warning[203]: Found opcode in column 1. (MOVWF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+014D   008D           00464 MOVWF EECON2     ; seqüência para escrita
+Warning[203]: Found opcode in column 1. (BSF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+014E   148D           00465 BSF EECON2,WR    ; iniciando a escrita
+Warning[203]: Found opcode in column 1. (BSF)
+014F   178B           00466 BSF INTCON,GIE   ; reabilitando interrupções
+Warning[203]: Found opcode in column 1. (NOP)
+0150   0000           00467 NOP
+Warning[203]: Found opcode in column 1. (NOP)
+0151   0000           00468 NOP
+Warning[203]: Found opcode in column 1. (BCF)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0152   110C           00469 BCF EECON1,WREN  ; desabilitando a escrita
+Warning[203]: Found opcode in column 1. (BCF)
+0153   1283           00470 BCF STATUS,RP0
+Warning[203]: Found opcode in column 1. (BCF)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0154   1303           00471 BCF STATUS,RP1   ; banco 0
+Warning[203]: Found opcode in column 1. (RETURN)
+0155   0008           00472 RETURN
+                      00473 
+                      00474 ;ORG 0X1000   ; tabela da mem. de programa
+                      00475 ;
+                      00476 ;DW 0X34F1
+                      00477 ;DW 0X3483
+                      00478 
+                      00479 ;------------------------------FIM EEPROM-----------------------------
+                      00480 
+                      00481 ;-----------------------PROGRAMA PRINCIPAL------------------------------------
+0156                  00482 INICIO
+                      00483 
+0156   204E           00484  CALL CONFIGURA
+0157   0186           00485  CLRF PORTB 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0158   3000           00486 MOVLW .0
+Warning[203]: Found opcode in column 1. (MOVWF)
+0159   00AD           00487 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (CALL)
+015A   20FB           00488 CALL LE_EEPROM   ; LENDO A EEPROM
+Warning[203]: Found opcode in column 1. (MOVWF)
+015B   00AA           00489 MOVWF DHR
+                      00490 
+Warning[203]: Found opcode in column 1. (MOVLW)
+015C   3001           00491 MOVLW .1
+Warning[203]: Found opcode in column 1. (MOVWF)
+015D   00AD           00492 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (CALL)
+015E   20FB           00493 CALL LE_EEPROM   ; LENDO A EEPROM
+Warning[203]: Found opcode in column 1. (MOVWF)
+015F   00A9           00494 MOVWF HR
+                      00495 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0160   3002           00496 MOVLW .2
+Warning[203]: Found opcode in column 1. (MOVWF)
+0161   00AD           00497 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (CALL)
+0162   20FB           00498 CALL LE_EEPROM   ; LENDO A EEPROM
+Warning[203]: Found opcode in column 1. (MOVWF)
+0163   00A8           00499 MOVWF DMIN
+                      00500 
+Warning[203]: Found opcode in column 1. (MOVLW)
+0164   3003           00501 MOVLW .3
+Warning[203]: Found opcode in column 1. (MOVWF)
+0165   00AD           00502 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (CALL)
+0166   20FB           00503 CALL LE_EEPROM   ; LENDO A EEPROM
+Warning[203]: Found opcode in column 1. (MOVWF)
+0167   00A7           00504 MOVWF MIN
+                      00505 
+Warning[203]: Found opcode in column 1. (MOVLW)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0168   3004           00506 MOVLW .4
+Warning[203]: Found opcode in column 1. (MOVWF)
+0169   00AD           00507 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (CALL)
+016A   20FB           00508 CALL LE_EEPROM   ; LENDO A EEPROM
+Warning[203]: Found opcode in column 1. (MOVWF)
+016B   00A6           00509 MOVWF DSEG
+                      00510 
+Warning[203]: Found opcode in column 1. (MOVLW)
+016C   3005           00511 MOVLW .5
+Warning[203]: Found opcode in column 1. (MOVWF)
+016D   00AD           00512 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (CALL)
+016E   20FB           00513 CALL LE_EEPROM   ; LENDO A EEPROM
+Warning[203]: Found opcode in column 1. (MOVWF)
+016F   00A5           00514 MOVWF  SEG
+                      00515 
+                      00516 
+0170   207C           00517  CALL INICIA_LCD
+0171   3080           00518  MOVLW 0X80    ;CURSOR DO LCD NAPRIMEIRA LINHA PRIMEIRA COLUNA
+0172   2096           00519  CALL ESCREVE_COMANDO
+0173   3048           00520  MOVLW 'H'
+0174   208B           00521  CALL ESCREVE_DADO
+0175   304F           00522  MOVLW 'O'
+0176   208B           00523  CALL ESCREVE_DADO
+0177   3052           00524  MOVLW 'R'
+0178   208B           00525  CALL ESCREVE_DADO
+0179   3041           00526  MOVLW 'A'
+017A   208B           00527  CALL ESCREVE_DADO
+017B   303A           00528  MOVLW ':'
+017C   208B           00529  CALL ESCREVE_DADO
+017D   3087           00530  MOVLW 0X87    
+017E   2096           00531  CALL ESCREVE_COMANDO
+017F   303A           00532  MOVLW ':'
+0180   208B           00533  CALL ESCREVE_DADO
+0181   308A           00534  MOVLW 0X8A    
+0182   2096           00535  CALL ESCREVE_COMANDO
+0183   303A           00536  MOVLW ':'
+0184   208B           00537  CALL ESCREVE_DADO
+                      00538 
+0185                  00539 LOOP
+                      00540 
+Warning[203]: Found opcode in column 1. (CALL)
+0185   20BF           00541 CALL EXIBEDHR
+Warning[203]: Found opcode in column 1. (CALL)
+0186   20B9           00542 CALL EXIBEHR
+Warning[203]: Found opcode in column 1. (CALL)
+0187   20B3           00543 CALL EXIBEDMIN
+Warning[203]: Found opcode in column 1. (CALL)
+0188   20AD           00544 CALL EXIBEMIN
+Warning[203]: Found opcode in column 1. (CALL)
+0189   20A7           00545 CALL EXIBEDSEG
+Warning[203]: Found opcode in column 1. (CALL)
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+018A   20A1           00546 CALL EXIBESEG
+Warning[203]: Found opcode in column 1. (MOVLW)
+018B   308D           00547 MOVLW 0X8D    
+Warning[203]: Found opcode in column 1. (CALL)
+018C   2096           00548 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVLW)
+018D   3020           00549 MOVLW ' '
+Warning[203]: Found opcode in column 1. (CALL)
+018E   208B           00550 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+018F   3087           00551 MOVLW 0X87    
+Warning[203]: Found opcode in column 1. (CALL)
+0190   2096           00552 CALL ESCREVE_COMANDO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0191   303A           00553 MOVLW ':'
+Warning[203]: Found opcode in column 1. (CALL)
+0192   208B           00554 CALL ESCREVE_DADO
+Warning[203]: Found opcode in column 1. (MOVLW)
+0193   3000           00555 MOVLW .0
+Warning[203]: Found opcode in column 1. (MOVWF)
+0194   00AD           00556 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (MOVF)
+0195   082A           00557 MOVF DHR,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+0196   00AE           00558 MOVWF DADO
+Warning[203]: Found opcode in column 1. (CALL)
+0197   2107           00559 CALL GRAVA_EEPROM   ; GRAVANDO O VALOR AAH NO ENDEREÇO 00H DA EEPROM
+Warning[203]: Found opcode in column 1. (MOVLW)
+0198   3001           00560 MOVLW .1
+Warning[203]: Found opcode in column 1. (MOVWF)
+0199   00AD           00561 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (MOVF)
+019A   0829           00562 MOVF HR,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+019B   00AE           00563 MOVWF DADO
+Warning[203]: Found opcode in column 1. (CALL)
+019C   2107           00564 CALL GRAVA_EEPROM   ; GRAVANDO O VALOR AAH NO ENDEREÇO 00H DA EEPROM
+Warning[203]: Found opcode in column 1. (MOVLW)
+019D   3002           00565 MOVLW .2
+Warning[203]: Found opcode in column 1. (MOVWF)
+019E   00AD           00566 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (MOVF)
+019F   0828           00567 MOVF DMIN,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+01A0   00AE           00568 MOVWF DADO
+Warning[203]: Found opcode in column 1. (CALL)
+01A1   2107           00569 CALL GRAVA_EEPROM   ; GRAVANDO O VALOR AAH NO ENDEREÇO 00H DA EEPROM
+Warning[203]: Found opcode in column 1. (MOVLW)
+01A2   3003           00570 MOVLW .3
+Warning[203]: Found opcode in column 1. (MOVWF)
+01A3   00AD           00571 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (MOVF)
+01A4   0827           00572 MOVF MIN,W
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 19
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (MOVWF)
+01A5   00AE           00573 MOVWF DADO
+Warning[203]: Found opcode in column 1. (CALL)
+01A6   2107           00574 CALL GRAVA_EEPROM   ; GRAVANDO O VALOR AAH NO ENDEREÇO 00H DA EEPROM
+Warning[203]: Found opcode in column 1. (MOVLW)
+01A7   3004           00575 MOVLW .4
+Warning[203]: Found opcode in column 1. (MOVWF)
+01A8   00AD           00576 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (MOVF)
+01A9   0826           00577 MOVF DSEG,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+01AA   00AE           00578 MOVWF DADO
+Warning[203]: Found opcode in column 1. (CALL)
+01AB   2107           00579 CALL GRAVA_EEPROM   ; GRAVANDO O VALOR AAH NO ENDEREÇO 00H DA EEPROM
+Warning[203]: Found opcode in column 1. (MOVLW)
+01AC   3005           00580 MOVLW .5
+Warning[203]: Found opcode in column 1. (MOVWF)
+01AD   00AD           00581 MOVWF ADDR
+Warning[203]: Found opcode in column 1. (MOVF)
+01AE   0825           00582 MOVF SEG,W
+Warning[203]: Found opcode in column 1. (MOVWF)
+01AF   00AE           00583 MOVWF DADO
+Warning[203]: Found opcode in column 1. (CALL)
+01B0   2107           00584 CALL GRAVA_EEPROM   ; GRAVANDO O VALOR AAH NO ENDEREÇO 00H DA EEPROM
+                      00585 
+                      00586 
+01B1   1806           00587  BTFSC PORTB,0  ; BOT0 ESTA APERTADO?
+01B2   29B4           00588  GOTO BOT1  ; NÃO ESTA APERTADO
+01B3   20C5           00589  CALL ZERA_SEG ; ESTA APERTADO
+01B4                  00590 BOT1 
+01B4   1986           00591  BTFSC PORTB,3  ; BOT0 ESTA APERTADO?
+01B5   29B7           00592  GOTO BOT2  ; NÃO ESTA APERTADO
+01B6   20CD           00593  CALL INCHR  ; ESTA APERTADO
+01B7                  00594 BOT2 
+01B7   1906           00595  BTFSC PORTB,2  ; BOT0 ESTA APERTADO?
+01B8   29BA           00596  GOTO BOT3  ; NÃO ESTA APERTADO
+01B9   20E3           00597  CALL INCDMIN  ; ESTA APERTADO
+01BA                  00598 BOT3 
+01BA   1886           00599  BTFSC PORTB,1  ; BOT0 ESTA APERTADO?
+01BB   2985           00600  GOTO LOOP  ; NÃO ESTA APERTADO
+01BC   20EF           00601  CALL INCMIN   ; ESTA APERTADO
+01BD   2985           00602  GOTO LOOP
+                      00603 
+                      00604 ;;MOVLW 0X10
+                      00605 ;MOVWF E1
+                      00606 ;MOVLW 0X00
+                      00607 ;MOVWF E2
+                      00608 ;CALL LE_PROGRAMA ; LENDO O ENDEREÇO 0X1000 DA MEM. DE PROGRAMA
+                      00609 
+Warning[205]: Found directive in column 1. (END)
+                      00610 END
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADDR                              0000002D
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ALTERADHR                         0000003C
+ALTERAHR                          00000033
+ALTERAHR4                         00000035
+ATRASO_100MS                      00000071
+ATRASO_1MS                        00000064
+ATRASO_1S                         0000006A
+BANK0                             BCF STATUS,RP0
+BANK1                             BSF STATUS,RP0
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BOT1                              000001B4
+BOT2                              000001B7
+BOT3                              000001BA
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+CONFIGURA                         0000004E
+CONT                              00000024
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DADO                              0000002E
+DATAH                             00000032
+DATAL                             00000031
+DATA_ADDRESS                      00000005
+DC                                00000001
+DECODER                           00000043
+DHR                               0000002A
+DMIN                              00000028
+DSEG                              00000026
+D_A                               00000005
+D_NOT_A                           00000005
+E1                                0000002F
+E2                                00000030
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+EEPGD                             00000007
+ESCREVE_COMANDO                   00000096
+ESCREVE_DADO                      0000008B
+EXIBEDHR                          000000BF
+EXIBEDMIN                         000000B3
+EXIBEDSEG                         000000A7
+EXIBEHR                           000000B9
+EXIBEMIN                          000000AD
+EXIBESEG                          000000A1
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+GO_NOT_DONE                       00000002
+GRAVA_EEPROM                      00000107
+GRAVA_PROGRAMA                    00000137
+HR                                00000029
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+IBF                               00000007
+IBOV                              00000005
+INCDMIN                           000000E3
+INCHR                             000000CD
+INCMIN                            000000EF
+INDF                              00000000
+INICIA_LCD                        0000007C
+INICIO                            00000156
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LE_EEPROM                         000000FB
+LE_PROGRAMA                       00000122
+LOOP                              00000185
+MIN                               00000027
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 24
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+READ_WRITE                        00000002
+REG1                              00000023
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SEG                               00000025
+SEN                               00000000
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 25
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+STATUS                            00000003
+STATUS_TEMP                       00000021
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TEMPO1                            0000002B
+TEMPO2                            0000002C
+TEMPO_1                           00000073
+TEMPO_2                           00000075
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+UMSEG                             00000022
+VOLT                              0000006C
+VOLTA                             0000003D
+VOLTA1                            00000066
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+W_TEMP                            00000020
+Z                                 00000002
+ZERA_SEG                          000000C5
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+__DEBUG                           1
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXX--
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   443
+Program Memory Words Free:  7749
+
+
+MPASM  5.44                RELOGIO+EEPROM.ASM   3-15-2014  21:26:54         PAGE 28
+
+
+
+
+
+Errors   :     0
+Warnings :   350 reported,     0 suppressed
+Messages :    36 reported,     0 suppressed
+
+

@@ -1,0 +1,19 @@
+# MPLAB IDE generated this makefile for use with GNU make.
+# Project: Genius.mcp
+# Date: Thu Jul 25 12:23:21 2013
+
+AS = MPASMWIN.exe
+CC = 
+LD = mplink.exe
+AR = mplib.exe
+RM = rm
+
+Genius.cof : main.o
+	$(CC) /p16F877A "main.o" /z__MPLAB_BUILD=1 /o"Genius.cof" /M"Genius.map" /W
+
+main.o : main.asm C:/Program\ Files\ (x86)/Microchip/MPASM\ Suite/P16F877A.INC
+	$(AS) /q /p16F877A "main.asm" /l"main.lst" /e"main.err" /o"main.o"
+
+clean : 
+	$(CC) "main.o" "main.err" "main.lst" "Genius.cof" "Genius.hex"
+

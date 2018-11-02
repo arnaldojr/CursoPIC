@@ -1,0 +1,70 @@
+MPLINK 4.42, Linker
+Linker Map File - Created Sat Mar 08 00:52:27 2014
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x0000f0
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000077      
+            120 out of 8454 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+             ATRASO_100MS   0x00001b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+               ATRASO_1MS   0x00000e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                ATRASO_1S   0x000014    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT0   0x00006b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT1   0x00006e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT2   0x000071    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT3   0x000074    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                CONFIGURA   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                    DEBUG   0x000061    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                EXIBETUDO   0x00004d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   INICIO   0x000066    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     LOOP   0x000052    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                    LOOP2   0x000065    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   SALVA0   0x000026    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   SALVA1   0x000033    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   SALVA2   0x000040    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                  TEMPO_1   0x00001d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                  TEMPO_2   0x00001f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     VOLT   0x000016    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                    VOLTA   0x000010    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                CONFIGURA   0x000001    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+               ATRASO_1MS   0x00000e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                    VOLTA   0x000010    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                ATRASO_1S   0x000014    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     VOLT   0x000016    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+             ATRASO_100MS   0x00001b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                  TEMPO_1   0x00001d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                  TEMPO_2   0x00001f    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   SALVA0   0x000026    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   SALVA1   0x000033    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   SALVA2   0x000040    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                EXIBETUDO   0x00004d    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     LOOP   0x000052    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                    DEBUG   0x000061    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                    LOOP2   0x000065    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                   INICIO   0x000066    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT0   0x00006b    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT1   0x00006e    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT2   0x000071    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+                     BOT3   0x000074    program     static C:\Users\JUNIOR\Dropbox\Aplicada2-Pic\Software\enderecamento_indireto.asm
+
+
